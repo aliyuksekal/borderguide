@@ -49,3 +49,11 @@ html.t-light { color-scheme: light; }
 .t-amoled .card-hero, .t-amoled .card-sim { background: #0a0a0a !important; }
 .t-amoled .theme-btn { background: #000; border-color: #2a2a2a; }
 .t-amoled .theme-btn.active { background: #2563eb; border-color: #3b82f6; }
+
+/* Açılır kapanır kayıt bilgisi */
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+details > summary::after { content: "\25BE"; margin-left: .25rem; opacity: .7; transition: transform .2s; }
+details[open] > summary::after { transform: rotate(180deg); }
+.t-light .bg-slate-950\/60 { background-color: #fff !important; }
+.t-light .text-amber-300 { color: #b45309 !important; }

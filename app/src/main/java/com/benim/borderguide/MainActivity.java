@@ -1,6 +1,11 @@
 package com.benim.borderguide;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.print.PrintAttributes;
+import android.print.PrintManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
@@ -27,6 +32,8 @@ import java.net.URL;
 import androidx.activity.ComponentActivity;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -41,6 +48,19 @@ public class MainActivity extends ComponentActivity {
 
     private FrameLayout root;
     private WebView web;
+    private WebView printView;
+    private ProBilling billing;
+
+    // Android 13+ bildirim izni; sonuç web tarafına window.bgNotifPerm(true/false) ile döner.
+    private final ActivityResultLauncher<String> notifPermission =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(),
+                    granted -> callJs("window.bgNotifPerm && window.bgNotifPerm(" + (granted ? "true" : "false") + ")"));
+
+    private void callJs(final String js) {
+        runOnUiThread(() -> {
+            if (web != null) web.evaluateJavascript(js, null);
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +118,7 @@ public class MainActivity extends ComponentActivity {
             }
         });
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
+        billing = new ProBilling(this, event -> callJs("window.bgProEvent && window.bgProEvent('" + event + "')"));
 
         if (savedInstanceState == null || web.restoreState(savedInstanceState) == null) {
             web.loadUrl(START_URL);
@@ -131,6 +152,69 @@ public class MainActivity extends ComponentActivity {
         @JavascriptInterface
         public void setTheme(final String theme) {
             runOnUiThread(() -> applyTheme(theme));
+        }
+
+        @JavascriptInterface
+        public boolean isPro() {
+            return billing != null && billing.isPro();
+        }
+
+        @JavascriptInterface
+        public String proPrice() {
+            return billing == null ? "" : billing.price();
+        }
+
+        @JavascriptInterface
+        public void buyPro() {
+            runOnUiThread(() -> { if (billing != null) billing.buy(); });
+        }
+
+        @JavascriptInterface
+        public void restorePro() {
+            runOnUiThread(() -> { if (billing != null) billing.queryPurchases(true); });
+        }
+
+        @JavascriptInterface
+        public void scheduleReminders(String json) {
+            Reminders.save(getApplicationContext(), json);
+        }
+
+        @JavascriptInterface
+        public void requestNotifPermission() {
+            runOnUiThread(() -> {
+                if (Build.VERSION.SDK_INT < 33
+                        || checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                    callJs("window.bgNotifPerm && window.bgNotifPerm(true)");
+                } else {
+                    notifPermission.launch(Manifest.permission.POST_NOTIFICATIONS);
+                }
+            });
+        }
+
+        // Raporu yazdırma ekranında açar; kullanıcı "PDF olarak kaydet"i seçebilir.
+        @JavascriptInterface
+        public void printReport(final String html, final String title) {
+            if (html == null) return;
+            runOnUiThread(() -> {
+                final WebView pv = new WebView(MainActivity.this);
+                printView = pv;
+                pv.setWebViewClient(new WebViewClient() {
+                    private boolean done = false;
+
+                    @Override
+                    public void onPageFinished(WebView view, String url) {
+                        if (done) return;
+                        done = true;
+                        PrintManager pm = (PrintManager) getSystemService(PRINT_SERVICE);
+                        String job = (title == null || title.isEmpty()) ? "BorderGuide" : title;
+                        if (pm != null) {
+                            pm.print(job, view.createPrintDocumentAdapter(job),
+                                    new PrintAttributes.Builder().setMediaSize(PrintAttributes.MediaSize.ISO_A4).build());
+                        }
+                    }
+                });
+                pv.loadDataWithBaseURL(null, html, "text/html", "UTF-8", null);
+            });
         }
 
         @JavascriptInterface
@@ -234,6 +318,7 @@ public class MainActivity extends ComponentActivity {
 
     @Override
     protected void onDestroy() {
+        if (billing != null) billing.end();
         if (web != null) {
             root.removeView(web);
             web.destroy();

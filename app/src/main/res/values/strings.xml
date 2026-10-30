@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BorderGuide</string>
+    <string name="channel_reminders">Kalış süresi hatırlatmaları</string>
 </resources>

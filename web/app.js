@@ -4,7 +4,7 @@ const FEED_URL = 'https://raw.githubusercontent.com/aliyuksekal/borderguide/main
 const LANGS = [['tr','🇹🇷 Türkçe'],['en','🇬🇧 English'],['uz',"🇺🇿 O'zbekcha"],['ru','🇷🇺 Русский'],['ko','🇰🇷 한국어'],['zh','🇨🇳 中文']];
 const K = { trips:'borderguide_trips', lang:'borderguide_lang', theme:'borderguide_theme', limits:'borderguide_limits',
   read:'borderguide_read_updates', remote:'borderguide_remote_updates', lastCheck:'borderguide_last_check',
-  intro:'borderguide_intro_done', sel:'borderguide_sel_country', wiki:'borderguide_wiki_country', flFrom:'borderguide_fl_from' };
+  intro:'borderguide_intro_done', sel:'borderguide_sel_country', wiki:'borderguide_wiki_country', flFrom:'borderguide_fl_from', rem:'borderguide_reminders', devPro:'borderguide_dev_pro' };
 
 const store = {
   get(k, fb){ try { const v = localStorage.getItem(k); return v === null ? fb : JSON.parse(v); } catch(e){ return fb; } },
@@ -59,7 +59,7 @@ trips = trips.map(tr => {
   let id = tr.country;
   if(!CMAP[id]){ const m = COUNTRIES.find(c => c.old === id); id = m ? m.id : id; }
   const days = dn(tr.exit) - dn(tr.entry) + 1;
-  return { id: tr.id || Date.now() + Math.random(), country:id, entry:tr.entry, exit:tr.exit, days: isNaN(days) ? 0 : days };
+  return { id: tr.id || Date.now() + Math.random(), country:id, entry:tr.entry, exit:tr.exit, days: isNaN(days) ? 0 : days, stay: tr.stay === 'home' ? 'home' : 'hotel' };
 }).filter(tr => CMAP[tr.country] && tr.days > 0);
 const saveTrips = () => store.set(K.trips, trips);
 
@@ -134,7 +134,8 @@ function toast(msg){ const el = $('toast'); el.textContent = msg; el.classList.r
 function openModal(id){
   const m = $(id); m.classList.remove('hidden'); m.classList.add('flex');
   if(id === 'notif-modal'){ closeNotifDetail(); renderNotifs(); }
-  if(id === 'settings-modal'){ $('check-result').classList.add('hidden'); renderLastCheck(); }
+  if(id === 'settings-modal'){ $('check-result').classList.add('hidden'); renderLastCheck(); renderPro(); }
+  if(id === 'pro-modal') renderPro();
 }
 function closeModal(id){ const m = $(id); m.classList.add('hidden'); m.classList.remove('flex'); if(id === 'edit-modal'){ editingId = null; resetDeleteBtn(); } }
 function openModals(){ return [...document.querySelectorAll('.modal')].filter(m => !m.classList.contains('hidden')); }
@@ -149,29 +150,28 @@ window.bgBack = function(){
     if(top.id === 'notif-modal' && !$('notif-detail').classList.contains('hidden')){ closeNotifDetail(); return true; }
     closeModal(top.id); return true;
   }
-  if(!$('tab-wiki').classList.contains('hidden')){ switchTab('dashboard'); return true; }
+  if($('tab-dashboard').classList.contains('hidden')){ switchTab('dashboard'); return true; }
   return false;
 };
 
 // ===== Sekmeler =====
 function switchTab(name){
-  ['dashboard','wiki'].forEach(n => {
+  ['dashboard','wiki','flights'].forEach(n => {
     $('tab-'+n).classList.toggle('hidden', n !== name);
     $('nav-'+n).classList.toggle('text-blue-400', n === name);
     $('nav-'+n).classList.toggle('text-slate-400', n !== name);
   });
   $('main').scrollTop = 0;
   if(name === 'wiki') renderWiki();
+  if(name === 'flights') renderFlightCard();
 }
 
 // ===== Ana kart =====
 const selCountry = () => $('trip-country').value;
 function renderDashboard(){
   const id = selCountry(), r = getRule(id), today = todayDn();
-  $('rule-title').textContent = cname(id);
   $('rule-desc').textContent = ruleText(r);
   $('rule-src').textContent = r.banned ? '' : (r.custom ? t('ruleCustom') : t('ruleDefault'));
-  $('sim-country').textContent = cname(id);
   const used = $('days-used'), lbl = $('days-used-label'), bar = $('progress-bar'), rem = $('days-remaining');
   $('progress-wrap').classList.toggle('hidden', !!r.banned || (!r.win && !r.stay));
   if(r.banned){
@@ -189,7 +189,7 @@ function renderDashboard(){
   const over = n > lim, left = lim - n;
   used.className = 'text-3xl font-black ' + (over ? 'text-red-400' : 'text-blue-400');
   bar.style.width = Math.min(100, lim ? n / lim * 100 : 0) + '%';
-  bar.className = 'h-2 rounded-full transition-all duration-500 bg-gradient-to-r ' + (over ? 'from-red-500 to-red-400' : left < 15 ? 'from-amber-500 to-red-400' : 'from-blue-500 to-emerald-400');
+  bar.className = 'h-1.5 rounded-full transition-all duration-500 bg-gradient-to-r ' + (over ? 'from-red-500 to-red-400' : left < 15 ? 'from-amber-500 to-red-400' : 'from-blue-500 to-emerald-400');
   rem.textContent = over ? t('overBy', { n: n - lim }) : t('daysN', { n:left });
   rem.className = 'font-bold text-sm ' + (over ? 'text-red-400' : left < 15 ? 'text-amber-400' : 'text-emerald-400');
 }
@@ -205,7 +205,7 @@ function validDates(e, x, errEl){
 function addTrip(){
   const country = selCountry(), entry = $('trip-entry').value, exit = $('trip-exit').value;
   if(!validDates(entry, exit, $('add-error'))) return;
-  trips.push({ id: Date.now(), country, entry, exit, days: dn(exit) - dn(entry) + 1 });
+  trips.push({ id: Date.now(), country, entry, exit, days: dn(exit) - dn(entry) + 1, stay: $('stay-type').value === 'home' ? 'home' : 'hotel' });
   saveTrips();
   $('trip-entry').value = ''; $('trip-exit').value = '';
   renderAll(); toast(t('saved'));
@@ -252,6 +252,8 @@ function simulateTrip(){
   const show = (kind, msg) => {
     const cls = { ok:'bg-emerald-500/10 border-emerald-500/30 text-emerald-300', bad:'bg-red-500/10 border-red-500/40 text-red-300', info:'bg-amber-500/10 border-amber-500/30 text-amber-300' }[kind];
     res.className = 'text-xs p-3 rounded-xl border leading-relaxed ' + cls; res.textContent = msg; res.classList.remove('hidden');
+    const canFly = kind !== 'info' && (DEST_CITIES[id] || []).length > 0 && !getRule(id).banned;
+    $('sim-flights').classList.toggle('hidden', !canFly);
   };
   if(!entry || !exit || isNaN(dn(entry)) || isNaN(dn(exit))) return show('info', t('errFill'));
   if(dn(exit) < dn(entry)) return show('info', t('errOrder'));
@@ -283,7 +285,7 @@ let editingId = null, deleteArmed = null;
 function openEditTrip(id){
   const tr = trips.find(x => x.id === id); if(!tr) return;
   editingId = id;
-  $('edit-country').value = tr.country; $('edit-entry').value = tr.entry; $('edit-exit').value = tr.exit;
+  $('edit-country').value = tr.country; $('edit-entry').value = tr.entry; $('edit-exit').value = tr.exit; $('edit-stay').value = tr.stay || 'hotel';
   $('edit-error').classList.add('hidden'); resetDeleteBtn(); openModal('edit-modal');
 }
 function resetDeleteBtn(){ clearTimeout(deleteArmed); deleteArmed = null; $('edit-delete').innerHTML = `<i class="fa-solid fa-trash mr-1"></i>${esc(t('del'))}`; }
@@ -291,7 +293,7 @@ function saveEditTrip(){
   const tr = trips.find(x => x.id === editingId); if(!tr) return;
   const entry = $('edit-entry').value, exit = $('edit-exit').value;
   if(!validDates(entry, exit, $('edit-error'))) return;
-  Object.assign(tr, { country:$('edit-country').value, entry, exit, days: dn(exit) - dn(entry) + 1 });
+  Object.assign(tr, { country:$('edit-country').value, entry, exit, days: dn(exit) - dn(entry) + 1, stay: $('edit-stay').value === 'home' ? 'home' : 'hotel' });
   saveTrips(); closeModal('edit-modal'); renderAll(); toast(t('updated'));
 }
 function deleteEditTrip(){
@@ -342,6 +344,11 @@ function renderReg(){
   }
   if(d.note) h += `<p class="text-[10px] text-slate-400">${esc(L(d.note))}</p>`;
   $('reg-info').innerHTML = h;
+  let sum = '';
+  if(type === 'home' && d.days){
+    sum = (d.calc && entry && !isNaN(dn(entry))) ? `${t('regLast')}: ${fmt(regDeadline(entry, d.days, d.dayType === 'working'))}` : `${d.days} ${d.dayType === 'working' ? t('wd') : t('cd')}`;
+  }
+  $('reg-summary').textContent = sum;
 }
 
 // ===== Rehber =====
@@ -432,15 +439,16 @@ function fillFlightSelects(){
   const want = from.value || store.get(K.flFrom, null) || DEF_ORIGIN[lang] || 'IST';
   from.innerHTML = ORIGIN_CITIES.map(c => `<option value="${c[0]}">${esc(cityName(c))} (${c[0]})</option>`).join('');
   from.value = ORIGIN_CITIES.some(c => c[0] === want) ? want : 'IST';
-  const list = DEST_CITIES[selCountry()] || [], curTo = to.value;
+  const list = DEST_CITIES[$('fl-country').value] || [], curTo = to.value;
   to.innerHTML = list.length ? list.map(c => `<option value="${c[0]}">${esc(cityName(c))} (${c[0]})</option>`).join('') : '<option value="">–</option>';
   if(list.some(c => c[0] === curTo)) to.value = curTo;
   to.disabled = !list.length;
 }
-function renderFlightCard(){
-  fillFlightSelects();
-  const e = $('sim-entry').value, x = $('sim-exit').value;
-  $('fl-dates').textContent = !e ? t('flNeedDates') : (x && dn(x) >= dn(e)) ? `${t('flRound')}: ${fmtIso(e)} → ${fmtIso(x)}` : `${t('flOneway')}: ${fmtIso(e)}`;
+function renderFlightCard(){ fillFlightSelects(); }
+function flightsFromSim(){
+  $('fl-country').value = selCountry(); $('fl-to').value = '';
+  $('fl-depart').value = $('sim-entry').value; $('fl-return').value = $('sim-exit').value;
+  switchTab('flights'); searchFlights();
 }
 let flSeq = 0; const flCbs = {};
 window.bgFlightCb = (id, body) => { const f = flCbs[id]; delete flCbs[id]; if(f) f(body); };
@@ -483,14 +491,15 @@ function openFlight(btn){
 async function searchFlights(){
   const out = $('fl-result'), btn = $('fl-btn');
   const msg = (m, cls) => { out.innerHTML = `<p class="text-xs ${cls || 'text-slate-300'}">${esc(m)}</p>`; };
-  if(!(DEST_CITIES[selCountry()] || []).length) return msg(t('flNoFlights'), 'text-amber-400');
+  if(!(DEST_CITIES[$('fl-country').value] || []).length) return msg(t('flNoFlights'), 'text-amber-400');
   if(!flightsEnabled()) return msg(t('flOff'), 'text-amber-400');
-  const e = $('sim-entry').value, x = $('sim-exit').value;
+  const e = $('fl-depart').value, x = $('fl-return').value;
   if(!e || isNaN(dn(e))) return msg(t('flNeedDates'), 'text-amber-400');
+  if(x && !isNaN(dn(x)) && dn(x) < dn(e)) return msg(t('errOrder'), 'text-amber-400');
   const origin = $('fl-from').value, dest = $('fl-to').value;
   if(origin === dest) return msg(t('flSame'), 'text-amber-400');
   store.set(K.flFrom, origin);
-  const round = !!x && !isNaN(dn(x)) && dn(x) >= dn(e);
+  const round = !!x && !isNaN(dn(x));
   const cur = CUR[lang] || 'USD';
   const base = { origin, destination:dest, currency:cur.toLowerCase(), sorting:'price', limit:5, one_way: round ? 'false' : 'true' };
   btn.disabled = true; msg(t('flLoading'));
@@ -507,6 +516,120 @@ async function searchFlights(){
     out.innerHTML = (month ? `<p class="text-xs text-amber-400">${esc(t('flMonth'))}</p>` : '') + data.slice(0, 5).map(f => flightRow(f, cur)).join('');
   } catch(err){ msg(t('flError'), 'text-red-400'); }
   finally { btn.disabled = false; }
+}
+
+// ===== PRO (Google Play tek seferlik satın alma) =====
+const hasBridge = () => !!window.AndroidBridge;
+function isPro(){
+  try { if(hasBridge() && AndroidBridge.isPro) return !!AndroidBridge.isPro(); } catch(e){}
+  return !hasBridge() && store.get(K.devPro, false) === true;
+}
+function renderPro(){
+  const pro = isPro();
+  $('pro-chip').classList.toggle('hidden', !pro);
+  document.querySelectorAll('.pro-tag').forEach(el => el.classList.toggle('hidden', pro));
+  let price = '';
+  try { price = (hasBridge() && AndroidBridge.proPrice && AndroidBridge.proPrice()) || ''; } catch(e){}
+  $('pro-buy').textContent = price ? t('proBuyPrice', { p:price }) : t('proBuy');
+  $('set-pro').innerHTML = pro
+    ? `<p class="text-sm font-bold text-amber-400"><i class="fa-solid fa-crown mr-1.5"></i>BorderGuide PRO</p><p class="text-xs text-slate-300">${esc(t('proActive'))}</p>`
+    : `<p class="text-sm font-bold text-amber-400"><i class="fa-solid fa-crown mr-1.5"></i>${esc(t('proGet'))}</p><p class="text-xs text-slate-300">${esc(t('proGetDesc'))}</p>
+       <button onclick="openModal('pro-modal')" class="w-full bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-extrabold py-2.5 rounded-xl text-sm">${esc(price ? t('proBuyPrice', { p:price }) : t('proGet'))}</button>`;
+  renderRemState();
+}
+function requirePro(){ if(isPro()) return true; openModal('pro-modal'); return false; }
+function buyPro(){ if(!hasBridge() || !AndroidBridge.buyPro) return toast(t('proNoPlay')); AndroidBridge.buyPro(); }
+function restorePro(){ if(!hasBridge() || !AndroidBridge.restorePro) return toast(t('proNoPlay')); AndroidBridge.restorePro(); }
+window.bgProEvent = ev => {
+  const msgs = { bought:'proThanks', restored:'proRestored', none:'proNone', noplay:'proNoPlay', fail:'proFail', pending:'proPending' };
+  if(msgs[ev]) toast(t(msgs[ev]));
+  if(ev === 'bought' || ev === 'restored') closeModal('pro-modal');
+  renderPro(); syncReminders();
+};
+
+// ===== Hatırlatma bildirimleri (PRO) =====
+const remOn = () => store.get(K.rem, false) === true;
+let remCount = 0;
+function dayAt10(d){ const x = new Date(d * 864e5); return new Date(x.getUTCFullYear(), x.getUTCMonth(), x.getUTCDate(), 10, 0, 0).getTime(); }
+function computeReminders(){
+  const out = [], today = todayDn();
+  trips.forEach(tr => {
+    const r = getRule(tr.country); if(r.banned) return;
+    const a = dn(tr.entry), b = dn(tr.exit), c = L(CMAP[tr.country].name);
+    if(b < today) return;
+    // Kalmaya devam edilirse son yasal gün
+    let last = null;
+    if(r.win){ const s = daySet(tr.country, { excludeId:tr.id }); for(let d = a; d <= a + 400; d++){ s.add(d); if(countWin(s, d, r.period) > r.win){ last = d - 1; break; } } }
+    if(r.stay){ const l = a + r.stay - 1; last = last === null ? l : Math.min(last, l); }
+    if(last !== null && last >= today && b >= last - 7){
+      [7, 3, 1].forEach(k => { const d = last - k; if(d >= today && d >= a - 1) out.push({ id:`lim-${tr.id}-${k}-${last}`, at:dayAt10(d), title:t('nfLimitTitle', { c }), text:t('nfLimitText', { n:k, date:fmt(last) }) }); });
+    }
+    if(tr.stay === 'home'){
+      const R = REG[tr.country];
+      if(R && R.calc && R.days){ const dl = regDeadline(tr.entry, R.days, R.dayType === 'working'), d = dl - 1;
+        if(d >= today) out.push({ id:`reg-${tr.id}-${dl}`, at:dayAt10(d), title:t('nfRegTitle', { c }), text:t('nfRegText', { date:fmt(dl) }) }); }
+    }
+  });
+  return out;
+}
+function syncReminders(){
+  if(!hasBridge() || !AndroidBridge.scheduleReminders) return;
+  const list = (isPro() && remOn()) ? computeReminders() : [];
+  remCount = list.length;
+  try { AndroidBridge.scheduleReminders(JSON.stringify(list)); } catch(e){}
+  renderRemState();
+}
+function renderRemState(){
+  const on = isPro() && remOn();
+  $('rem-btn').textContent = on ? t('remOffBtn') : t('remOn');
+  $('rem-status').textContent = on ? t('remActive', { n:remCount }) : t('remInactive');
+}
+function toggleReminders(){
+  if(!requirePro()) return;
+  if(remOn()){ store.set(K.rem, false); syncReminders(); return; }
+  if(!hasBridge() || !AndroidBridge.requestNotifPermission) return toast(t('remNoApp'));
+  AndroidBridge.requestNotifPermission();
+}
+window.bgNotifPerm = granted => {
+  if(granted){ store.set(K.rem, true); syncReminders(); toast(t('remActive', { n:remCount })); }
+  else { store.set(K.rem, false); renderRemState(); toast(t('remDenied')); }
+};
+
+// ===== Seyahat geçmişi raporu (PRO) =====
+function openReport(){ if(!requirePro()) return; $('rep-error').classList.add('hidden'); openModal('report-modal'); }
+function makeReport(){
+  if(!requirePro()) return;
+  const years = +$('rep-period').value, today = todayDn();
+  const from = years ? (() => { const d = new Date(); return Math.round(Date.UTC(d.getFullYear() - years, d.getMonth(), d.getDate()) / 864e5); })() : -Infinity;
+  const list = trips.filter(tr => dn(tr.exit) >= from).sort((a, b) => dn(a.entry) - dn(b.entry));
+  if(!list.length){ $('rep-error').textContent = t('repEmpty'); $('rep-error').classList.remove('hidden'); return; }
+  const name = $('rep-name').value.trim();
+  const totals = {}; list.forEach(tr => { totals[tr.country] = (totals[tr.country] || 0) + tr.days; });
+  const period = years ? `${fmt(from)} – ${fmt(today)}` : t('repAll');
+  const rows = list.map((tr, i) => `<tr><td>${i + 1}</td><td>${esc(L(CMAP[tr.country].name))}</td><td>${fmtIso(tr.entry)}</td><td>${fmtIso(tr.exit)}</td><td class="n">${tr.days}</td></tr>`).join('');
+  const trows = Object.entries(totals).sort((a, b) => b[1] - a[1]).map(([c, n]) => `<tr><td>${esc(L(CMAP[c].name))}</td><td class="n">${n}</td></tr>`).join('');
+  const total = list.reduce((a, tr) => a + tr.days, 0);
+  const html = `<!DOCTYPE html><html lang="${lang}"><head><meta charset="UTF-8"><title>${esc(t('repHead'))}</title><style>
+    :root{color-scheme:light}html,body{background:#fff}
+    body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif;color:#0f172a;margin:24px;font-size:12px}
+    h1{font-size:20px;margin:0 0 4px}h2{font-size:14px;margin:20px 0 6px}.meta{color:#475569;margin:2px 0}
+    table{width:100%;border-collapse:collapse;margin-top:6px}th,td{border:1px solid #cbd5e1;padding:5px 7px;text-align:left}th{background:#e2e8f0}
+    td.n,th.n{text-align:right}tfoot td{font-weight:700;background:#f1f5f9}.foot{margin-top:18px;color:#64748b;font-size:10px}
+  </style></head><body>
+    <h1>${esc(t('repHead'))}</h1>
+    ${name ? `<p class="meta"><b>${esc(t('repTraveler'))}:</b> ${esc(name)}</p>` : ''}
+    <p class="meta"><b>${esc(t('repPeriod'))}:</b> ${esc(period)}</p>
+    <p class="meta"><b>${esc(t('repGenerated'))}:</b> ${fmt(today)}</p>
+    <table><thead><tr><th>#</th><th>${esc(t('repCountry'))}</th><th>${esc(t('repEntry'))}</th><th>${esc(t('repExit'))}</th><th class="n">${esc(t('repDays'))}</th></tr></thead>
+    <tbody>${rows}</tbody><tfoot><tr><td colspan="4">${esc(t('repTotal'))} · ${list.length} ${esc(t('repTrips'))}</td><td class="n">${total}</td></tr></tfoot></table>
+    <h2>${esc(t('repByCountry'))}</h2>
+    <table><thead><tr><th>${esc(t('repCountry'))}</th><th class="n">${esc(t('repDays'))}</th></tr></thead><tbody>${trows}</tbody></table>
+    <p class="foot">${esc(t('repFooter'))} · BorderGuide</p>
+  </body></html>`;
+  closeModal('report-modal');
+  const title = 'BorderGuide-' + t('repHead').replace(/\s+/g, '-');
+  if(hasBridge() && AndroidBridge.printReport) AndroidBridge.printReport(html, title);
+  else { window.__lastReport = html; const w = window.open('', '_blank'); if(w){ w.document.write(html); w.document.close(); w.print(); } }
 }
 
 // ===== Tanıtım ekranı =====
@@ -527,7 +650,7 @@ function introNext(){
 // ===== Başlat =====
 function renderAll(){
   store.set(K.sel, selCountry());
-  renderDashboard(); renderReg(); renderTrips(); renderWarnBar(); renderNotifs(); renderFlightCard();
+  renderDashboard(); renderReg(); renderTrips(); renderWarnBar(); renderNotifs(); renderFlightCard(); renderPro(); syncReminders();
   if(!$('tab-wiki').classList.contains('hidden')) renderWiki();
   if(!$('sim-result').classList.contains('hidden')) simulateTrip();
 }
@@ -537,11 +660,12 @@ function init(){
   fillSelects();
   const sel = store.get(K.sel, 'schengen'); $('trip-country').value = CMAP[sel] ? sel : 'schengen';
   const wk = store.get(K.wiki, 'schengen'); $('wiki-country').value = CMAP[wk] ? wk : 'schengen';
+  $('fl-country').value = $('trip-country').value;
   setTheme(theme, false);
   document.querySelectorAll('.lang-select').forEach(s => s.addEventListener('change', e => changeLanguage(e.target.value)));
-  $('trip-country').addEventListener('change', () => { $('sim-result').classList.add('hidden'); $('fl-result').innerHTML = ''; renderAll(); });
-  ['sim-entry','sim-exit'].forEach(i => ['change','input'].forEach(ev => $(i).addEventListener(ev, () => { $('fl-result').innerHTML = ''; renderFlightCard(); })));
-  $('fl-to').addEventListener('change', () => { $('fl-result').innerHTML = ''; });
+  $('trip-country').addEventListener('change', () => { $('sim-result').classList.add('hidden'); $('sim-flights').classList.add('hidden'); $('fl-country').value = selCountry(); $('fl-result').innerHTML = ''; renderAll(); });
+  $('fl-country').addEventListener('change', () => { $('fl-result').innerHTML = ''; fillFlightSelects(); });
+  ['fl-to','fl-depart','fl-return'].forEach(i => $(i).addEventListener('change', () => { $('fl-result').innerHTML = ''; }));
   $('fl-from').addEventListener('change', () => { store.set(K.flFrom, $('fl-from').value); $('fl-result').innerHTML = ''; });
   $('wiki-country').addEventListener('change', renderWiki);
   $('stay-type').addEventListener('change', renderReg);

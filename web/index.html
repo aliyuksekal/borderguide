@@ -12,129 +12,155 @@
 </head>
 <body id="app-body" class="flex flex-col h-screen max-w-md mx-auto select-none bg-slate-950 text-slate-100">
 
-<header id="app-header" class="bg-slate-900 border-b border-slate-800 px-3 py-2.5 flex justify-between items-center z-40 shrink-0">
+<header id="app-header" class="bg-slate-900 border-b border-slate-800 px-3 py-2 flex justify-between items-center gap-2 z-40 shrink-0">
   <div class="flex items-center gap-2 min-w-0">
-    <img src="logo.webp" alt="BorderGuide" class="w-11 h-11 shrink-0 drop-shadow-lg" draggable="false">
+    <img src="logo.webp" alt="BorderGuide" class="w-10 h-10 shrink-0 drop-shadow-lg" draggable="false">
     <div class="min-w-0">
-      <h1 class="font-bold text-sm tracking-wide text-slate-100">BorderGuide</h1>
+      <h1 class="font-bold text-sm tracking-wide text-slate-100 flex items-center gap-1.5">BorderGuide <span id="pro-chip" class="hidden bg-amber-400 text-slate-950 text-[9px] font-extrabold px-1.5 py-0.5 rounded">PRO</span></h1>
       <p class="text-[10px] text-slate-400 truncate"><span data-i18n="dataDate"></span> <span id="hdr-data-date"></span></p>
     </div>
   </div>
-  <button onclick="openModal('notif-modal')" aria-label="notifications" class="relative bg-slate-800/80 border border-slate-700 text-amber-400 w-10 h-10 rounded-xl flex items-center justify-center active:scale-95 transition-transform">
-    <i class="fa-solid fa-bell"></i>
-    <span id="notif-badge" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] px-1 items-center justify-center">0</span>
-  </button>
+  <div class="flex items-center gap-2 shrink-0">
+    <button onclick="openModal('notif-modal')" aria-label="notifications" class="hdr-btn relative bg-slate-800/80 border border-slate-700 text-amber-400 w-10 h-10 rounded-xl flex items-center justify-center active:scale-95 transition-transform">
+      <i class="fa-solid fa-bell"></i>
+      <span id="notif-badge" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] px-1 items-center justify-center">0</span>
+    </button>
+    <button onclick="openModal('settings-modal')" aria-label="settings" class="hdr-btn bg-slate-800/80 border border-slate-700 text-slate-300 w-10 h-10 rounded-xl flex items-center justify-center active:scale-95 transition-transform">
+      <i class="fa-solid fa-gear"></i>
+    </button>
+  </div>
 </header>
 <div id="warn-bar" class="hidden bg-red-600 text-white px-3 py-2 space-y-0.5 z-30 shadow-lg shrink-0"></div>
 
-<main id="main" class="flex-1 overflow-y-auto p-4 pb-6 space-y-5">
+<main id="main" class="flex-1 overflow-y-auto p-3 pb-6 space-y-3">
 
-<!-- TAKİP -->
-<section id="tab-dashboard" class="space-y-5">
-  <div class="card-hero bg-gradient-to-br from-slate-900 to-blue-950/40 border border-blue-500/30 rounded-3xl p-5 shadow-xl">
-    <div class="flex justify-between items-start gap-3 mb-4">
+<!-- ===== TAKİP ===== -->
+<section id="tab-dashboard" class="space-y-3">
+  <div class="card-hero bg-gradient-to-br from-slate-900 to-blue-950/40 border border-blue-500/30 rounded-2xl p-4 shadow-xl">
+    <div class="flex items-center justify-between gap-2 mb-3">
+      <select id="trip-country" aria-label="country" class="country-select hero-select flex-1 min-w-0 bg-slate-950/60 border border-slate-700 text-slate-100 rounded-xl px-3 py-2 text-sm font-bold focus:outline-none focus:border-blue-500"></select>
+      <button onclick="openLimitModal()" aria-label="limit" class="shrink-0 text-blue-400 w-9 h-9 rounded-xl border border-slate-700 bg-slate-950/60 flex items-center justify-center"><i class="fa-solid fa-sliders"></i></button>
+    </div>
+    <div class="flex justify-between items-end gap-3">
       <div class="min-w-0">
-        <span class="bg-blue-500/10 text-blue-400 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider" data-i18n="activeRule"></span>
-        <h3 id="rule-title" class="font-extrabold text-lg mt-2 leading-tight"></h3>
-        <p id="rule-desc" class="text-xs text-slate-400 mt-0.5"></p>
+        <p id="rule-desc" class="text-xs text-slate-300"></p>
         <p id="rule-src" class="text-[10px] text-slate-500 mt-0.5"></p>
       </div>
       <div class="text-right shrink-0">
-        <span id="days-used" class="text-3xl font-black text-blue-400">0</span>
-        <span id="days-used-label" class="text-[10px] text-slate-500 block"></span>
+        <span id="days-used" class="text-3xl font-black text-blue-400 leading-none">0</span>
+        <span id="days-used-label" class="text-[10px] text-slate-500 block mt-1"></span>
       </div>
     </div>
-    <div id="progress-wrap" class="w-full bg-black/40 rounded-full h-3 mb-3 p-0.5 border border-slate-800"><div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-emerald-400 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
-    <div class="flex justify-between items-center text-xs pt-2 border-t border-slate-800/60">
+    <div id="progress-wrap" class="w-full bg-black/40 rounded-full h-2.5 mt-3 p-0.5 border border-slate-800"><div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-emerald-400 h-1.5 rounded-full transition-all duration-500" style="width:0%"></div></div>
+    <div class="flex justify-between items-center text-xs mt-2">
       <span class="text-slate-400" data-i18n="remaining"></span>
       <span id="days-remaining" class="font-bold text-emerald-400 text-sm"></span>
     </div>
-    <button onclick="openLimitModal()" class="mt-3 text-[11px] text-blue-400 font-semibold flex items-center"><i class="fa-solid fa-sliders mr-1.5"></i><span data-i18n="editLimit"></span></button>
   </div>
 
-  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2.5">
     <h4 class="font-bold text-sm flex items-center"><i class="fa-solid fa-plane-departure text-blue-400 mr-2"></i><span data-i18n="logTitle"></span></h4>
-    <div class="space-y-2.5">
-      <div>
-        <label class="block text-[10px] text-slate-400 mb-1" data-i18n="countryLbl"></label>
-        <select id="trip-country" class="country-select w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500"></select>
-      </div>
-      <div class="grid grid-cols-2 gap-2">
-        <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="entryLabel"></label><input type="date" id="trip-entry" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none focus:border-blue-500"></div>
-        <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="exitLabel"></label><input type="date" id="trip-exit" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none focus:border-blue-500"></div>
-      </div>
-      <div>
-        <label class="block text-[10px] text-slate-400 mb-1" data-i18n="stayType"></label>
-        <select id="stay-type" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none focus:border-blue-500">
-          <option value="hotel" data-i18n="hotel"></option>
-          <option value="home" data-i18n="home"></option>
-        </select>
-      </div>
-      <div id="reg-info" class="bg-amber-500/5 border border-amber-500/30 rounded-xl p-3 space-y-1.5 text-[11px] text-slate-300 leading-relaxed"></div>
-      <p id="add-error" class="hidden text-xs text-red-400"></p>
-      <button onclick="addTrip()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-blue-600/20 active:scale-95 transition-transform" data-i18n="btnAdd"></button>
+    <div class="grid grid-cols-2 gap-2">
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="entryLabel"></label><input type="date" id="trip-entry" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl px-2.5 py-2 text-sm focus:outline-none focus:border-blue-500"></div>
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="exitLabel"></label><input type="date" id="trip-exit" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl px-2.5 py-2 text-sm focus:outline-none focus:border-blue-500"></div>
     </div>
+    <div>
+      <label class="block text-[10px] text-slate-400 mb-1" data-i18n="stayType"></label>
+      <select id="stay-type" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl px-2.5 py-2 text-sm focus:outline-none focus:border-blue-500">
+        <option value="hotel" data-i18n="hotel"></option>
+        <option value="home" data-i18n="home"></option>
+      </select>
+    </div>
+    <details id="reg-box" class="bg-amber-500/5 border border-amber-500/30 rounded-xl text-[11px] text-slate-300 leading-relaxed">
+      <summary class="px-3 py-2 flex items-center justify-between gap-2 cursor-pointer">
+        <span class="font-bold text-amber-400"><i class="fa-solid fa-file-signature mr-1"></i><span data-i18n="regTitle"></span></span>
+        <span id="reg-summary" class="text-amber-300 font-semibold text-right"></span>
+      </summary>
+      <div id="reg-info" class="px-3 pb-3 space-y-1.5"></div>
+    </details>
+    <p id="add-error" class="hidden text-xs text-red-400"></p>
+    <button onclick="addTrip()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-sm shadow-lg shadow-blue-600/20 active:scale-95 transition-transform" data-i18n="btnAdd"></button>
   </div>
 
-  <div class="card-sim bg-gradient-to-br from-indigo-950/60 to-slate-900 border border-indigo-500/40 rounded-2xl p-4 space-y-3">
-    <h4 class="font-bold text-xs text-indigo-300 uppercase tracking-wider flex items-center"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-indigo-400"></i><span data-i18n="simTitle"></span></h4>
-    <p class="text-[11px] text-slate-300" data-i18n="simDesc"></p>
-    <p class="text-[11px] text-slate-400"><span data-i18n="countryLbl"></span>: <b id="sim-country" class="text-slate-200"></b></p>
+  <div class="card-sim bg-gradient-to-br from-indigo-950/60 to-slate-900 border border-indigo-500/40 rounded-2xl p-4 space-y-2.5">
+    <h4 class="font-bold text-sm text-indigo-300 flex items-center"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-indigo-400"></i><span data-i18n="simTitle"></span></h4>
+    <p class="text-[11px] text-slate-400" data-i18n="simDesc"></p>
     <div class="grid grid-cols-2 gap-2">
-      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="simEntryLbl"></label><input type="date" id="sim-entry" class="w-full bg-slate-950 border border-indigo-500/50 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none"></div>
-      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="simExitLbl"></label><input type="date" id="sim-exit" class="w-full bg-slate-950 border border-indigo-500/50 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none"></div>
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="simEntryLbl"></label><input type="date" id="sim-entry" class="w-full bg-slate-950 border border-indigo-500/50 text-slate-100 rounded-xl px-2.5 py-2 text-sm focus:outline-none"></div>
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="simExitLbl"></label><input type="date" id="sim-exit" class="w-full bg-slate-950 border border-indigo-500/50 text-slate-100 rounded-xl px-2.5 py-2 text-sm focus:outline-none"></div>
     </div>
     <button onclick="simulateTrip()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-sm shadow-md shadow-indigo-600/20 active:scale-95 transition-transform" data-i18n="btnSim"></button>
     <div id="sim-result" class="hidden text-xs p-3 rounded-xl border"></div>
-  </div>
-  <div id="flight-card" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-    <h4 class="font-bold text-sm flex items-center"><i class="fa-solid fa-plane text-sky-400 mr-2"></i><span data-i18n="flTitle"></span></h4>
-    <p class="text-[11px] text-slate-400" data-i18n="flDesc"></p>
-    <div class="grid grid-cols-2 gap-2">
-      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="flFrom"></label><select id="fl-from" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none focus:border-blue-500"></select></div>
-      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="flTo"></label><select id="fl-to" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none focus:border-blue-500"></select></div>
-    </div>
-    <p id="fl-dates" class="text-[11px] text-slate-300"></p>
-    <button id="fl-btn" onclick="searchFlights()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 rounded-xl text-sm active:scale-95 transition-transform" data-i18n="flBtn"></button>
-    <div id="fl-result" class="space-y-2"></div>
-    <p class="text-[10px] text-slate-500 leading-relaxed" data-i18n="flNote"></p>
+    <button id="sim-flights" onclick="flightsFromSim()" class="hidden w-full border border-sky-500/50 text-sky-400 font-bold py-2 rounded-xl text-sm"><i class="fa-solid fa-plane mr-1.5"></i><span data-i18n="flFromSim"></span></button>
   </div>
 
   <div class="space-y-2">
-    <h4 class="font-bold text-xs text-slate-400 uppercase tracking-wider" data-i18n="recentLogs"></h4>
+    <div class="flex items-center justify-between">
+      <h4 class="font-bold text-xs text-slate-400 uppercase tracking-wider" data-i18n="recentLogs"></h4>
+      <button onclick="openReport()" class="text-[11px] font-bold text-amber-400 flex items-center gap-1"><i class="fa-solid fa-file-pdf"></i><span data-i18n="repShort"></span><span class="pro-tag bg-amber-400 text-slate-950 text-[9px] font-extrabold px-1 rounded">PRO</span></button>
+    </div>
     <div id="trip-list" class="space-y-2"></div>
   </div>
 </section>
 
-<!-- REHBER -->
-<section id="tab-wiki" class="hidden space-y-4">
+<!-- ===== REHBER ===== -->
+<section id="tab-wiki" class="hidden space-y-3">
   <div>
     <h2 class="font-bold text-lg" data-i18n="wikiTitle"></h2>
     <p class="text-xs text-slate-400" data-i18n="wikiDesc"></p>
   </div>
-  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
-    <label class="block text-xs font-semibold text-slate-400 uppercase" data-i18n="selectCountry"></label>
-    <select id="wiki-country" class="country-select w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500"></select>
-  </div>
+  <select id="wiki-country" aria-label="country" class="country-select w-full bg-slate-900 border border-slate-700 text-slate-100 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500"></select>
   <div id="wiki-card"></div>
+</section>
+
+<!-- ===== UÇUŞLAR ===== -->
+<section id="tab-flights" class="hidden space-y-3">
+  <div>
+    <h2 class="font-bold text-lg" data-i18n="flTitle"></h2>
+    <p class="text-xs text-slate-400" data-i18n="flDesc"></p>
+  </div>
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2.5">
+    <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="flFrom"></label><select id="fl-from" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl px-2.5 py-2 text-sm focus:outline-none focus:border-blue-500"></select></div>
+    <div class="grid grid-cols-2 gap-2">
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="flCountry"></label><select id="fl-country" class="country-select w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl px-2.5 py-2 text-sm focus:outline-none focus:border-blue-500"></select></div>
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="flTo"></label><select id="fl-to" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl px-2.5 py-2 text-sm focus:outline-none focus:border-blue-500"></select></div>
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="flDepart"></label><input type="date" id="fl-depart" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl px-2.5 py-2 text-sm focus:outline-none focus:border-blue-500"></div>
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="flReturn"></label><input type="date" id="fl-return" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl px-2.5 py-2 text-sm focus:outline-none focus:border-blue-500"></div>
+    </div>
+    <button id="fl-btn" onclick="searchFlights()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 rounded-xl text-sm active:scale-95 transition-transform"><i class="fa-solid fa-magnifying-glass mr-1.5"></i><span data-i18n="flBtn"></span></button>
+  </div>
+  <div id="fl-result" class="space-y-2"></div>
+  <p class="text-[10px] text-slate-500 leading-relaxed" data-i18n="flNote"></p>
 </section>
 
 </main>
 
-<nav id="app-nav" class="bg-slate-900 border-t border-slate-800 py-2 flex justify-evenly items-center z-40 shrink-0">
-  <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn flex flex-col items-center text-blue-400 gap-0.5 px-4 py-1"><i class="fa-solid fa-chart-pie text-lg"></i><span class="text-[10px] font-semibold" data-i18n="navTracker"></span></button>
-  <button onclick="switchTab('wiki')" id="nav-wiki" class="nav-btn flex flex-col items-center text-slate-400 gap-0.5 px-4 py-1"><i class="fa-solid fa-book-atlas text-lg"></i><span class="text-[10px] font-semibold" data-i18n="navWiki"></span></button>
-  <button onclick="openModal('settings-modal')" class="flex flex-col items-center text-slate-400 gap-0.5 px-4 py-1"><i class="fa-solid fa-gear text-lg"></i><span class="text-[10px] font-semibold" data-i18n="navSettings"></span></button>
+<nav id="app-nav" class="bg-slate-900 border-t border-slate-800 py-1.5 flex justify-evenly items-center z-40 shrink-0">
+  <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center text-blue-400 gap-0.5 px-4 py-1"><i class="fa-solid fa-chart-pie text-lg"></i><span class="text-[10px] font-semibold" data-i18n="navTracker"></span></button>
+  <button onclick="switchTab('wiki')" id="nav-wiki" class="flex flex-col items-center text-slate-400 gap-0.5 px-4 py-1"><i class="fa-solid fa-book-atlas text-lg"></i><span class="text-[10px] font-semibold" data-i18n="navWiki"></span></button>
+  <button onclick="switchTab('flights')" id="nav-flights" class="flex flex-col items-center text-slate-400 gap-0.5 px-4 py-1"><i class="fa-solid fa-plane text-lg"></i><span class="text-[10px] font-semibold" data-i18n="navFlights"></span></button>
 </nav>
 
-<!-- AYARLAR -->
+<!-- ===== AYARLAR ===== -->
 <div id="settings-modal" class="modal fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
-  <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+  <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
     <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-      <h3 class="font-bold text-base flex items-center"><i class="fa-solid fa-sliders mr-2 text-blue-400"></i><span data-i18n="settingsTitle"></span></h3>
+      <h3 class="font-bold text-base flex items-center"><i class="fa-solid fa-gear mr-2 text-blue-400"></i><span data-i18n="settingsTitle"></span></h3>
       <button onclick="closeModal('settings-modal')" class="text-slate-400 p-1" aria-label="close"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
+
+    <div id="set-pro" class="bg-gradient-to-br from-amber-500/15 to-transparent border border-amber-500/40 rounded-2xl p-3 space-y-2"></div>
+
     <div class="space-y-2">
+      <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5"><i class="fa-solid fa-bell"></i><span data-i18n="remTitle"></span><span class="pro-tag bg-amber-400 text-slate-950 text-[9px] font-extrabold px-1 rounded">PRO</span></h4>
+      <p class="text-xs text-slate-300" data-i18n="remDesc"></p>
+      <button id="rem-btn" onclick="toggleReminders()" class="w-full bg-slate-950 border border-slate-700 text-slate-200 font-bold py-2.5 rounded-xl text-sm"></button>
+      <p id="rem-status" class="text-[11px] text-slate-400"></p>
+    </div>
+
+    <div class="space-y-2 border-t border-slate-800 pt-4">
       <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="setLang"></label>
       <select id="lang-selector" class="lang-select w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500"></select>
     </div>
@@ -162,7 +188,45 @@
   </div>
 </div>
 
-<!-- GİZLİLİK -->
+<!-- ===== PRO SATIN ALMA ===== -->
+<div id="pro-modal" class="modal fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
+  <div class="bg-slate-900 border border-amber-500/50 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between items-start">
+      <div class="flex items-center gap-3">
+        <img src="logo.webp" alt="" class="w-12 h-12">
+        <div><h3 class="font-extrabold text-lg">BorderGuide <span class="text-amber-400">PRO</span></h3><p class="text-xs text-slate-400" data-i18n="proOnce"></p></div>
+      </div>
+      <button onclick="closeModal('pro-modal')" class="text-slate-400 p-1" aria-label="close"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <ul class="space-y-3 text-sm text-slate-200">
+      <li class="flex gap-3"><i class="fa-solid fa-bell text-amber-400 mt-1"></i><span data-i18n="proF1"></span></li>
+      <li class="flex gap-3"><i class="fa-solid fa-file-pdf text-amber-400 mt-1"></i><span data-i18n="proF2"></span></li>
+    </ul>
+    <p class="text-[11px] text-slate-400 bg-black/30 border border-slate-800 rounded-xl p-3"><i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i><span data-i18n="proFree"></span></p>
+    <button id="pro-buy" onclick="buyPro()" class="w-full bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-extrabold py-3.5 rounded-xl text-sm active:scale-95 transition-transform"></button>
+    <button onclick="restorePro()" class="w-full text-xs text-slate-400 underline" data-i18n="proRestore"></button>
+  </div>
+</div>
+
+<!-- ===== RAPOR ===== -->
+<div id="report-modal" class="modal fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 space-y-3 shadow-2xl">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <h3 class="font-bold text-base flex items-center"><i class="fa-solid fa-file-pdf mr-2 text-amber-400"></i><span data-i18n="repTitle"></span></h3>
+      <button onclick="closeModal('report-modal')" class="text-slate-400 p-1" aria-label="close"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <p class="text-xs text-slate-300" data-i18n="repDesc"></p>
+    <div><label class="block text-[11px] text-slate-400 mb-1" data-i18n="repName"></label><input id="rep-name" maxlength="80" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none"></div>
+    <div><label class="block text-[11px] text-slate-400 mb-1" data-i18n="repPeriod"></label>
+      <select id="rep-period" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none">
+        <option value="0" data-i18n="repAll"></option><option value="5" data-i18n="repY5"></option><option value="10" data-i18n="repY10"></option>
+      </select></div>
+    <p id="rep-error" class="hidden text-xs text-red-400"></p>
+    <button onclick="makeReport()" class="w-full bg-amber-500 text-slate-950 font-extrabold py-3 rounded-xl text-sm" data-i18n="repBtn"></button>
+  </div>
+</div>
+
+<!-- ===== GİZLİLİK ===== -->
 <div id="privacy-modal" class="modal fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 space-y-3 shadow-2xl max-h-[85vh] overflow-y-auto">
     <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -176,25 +240,28 @@
   </div>
 </div>
 
-<!-- KAYIT DÜZENLE -->
+<!-- ===== KAYIT DÜZENLE ===== -->
 <div id="edit-modal" class="modal fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 space-y-3 shadow-2xl">
     <div class="flex justify-between items-center border-b border-slate-800 pb-3">
       <h3 class="font-bold text-base flex items-center"><i class="fa-solid fa-pen mr-2 text-blue-400"></i><span data-i18n="editTitle"></span></h3>
       <button onclick="closeModal('edit-modal')" class="text-slate-400 p-1" aria-label="close"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
-    <select id="edit-country" class="country-select w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500"></select>
+    <select id="edit-country" class="country-select w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none focus:border-blue-500"></select>
     <div class="grid grid-cols-2 gap-2">
-      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="entryLabel"></label><input type="date" id="edit-entry" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none"></div>
-      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="exitLabel"></label><input type="date" id="edit-exit" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none"></div>
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="entryLabel"></label><input type="date" id="edit-entry" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl px-2.5 py-2 text-sm focus:outline-none"></div>
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="exitLabel"></label><input type="date" id="edit-exit" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl px-2.5 py-2 text-sm focus:outline-none"></div>
     </div>
+    <select id="edit-stay" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none">
+      <option value="hotel" data-i18n="hotel"></option><option value="home" data-i18n="home"></option>
+    </select>
     <p id="edit-error" class="hidden text-xs text-red-400"></p>
     <button onclick="saveEditTrip()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl text-sm active:scale-95 transition-transform" data-i18n="save"></button>
     <button id="edit-delete" onclick="deleteEditTrip()" class="w-full bg-transparent border border-red-500/60 text-red-400 font-bold py-2.5 rounded-xl text-sm active:scale-95 transition-transform"></button>
   </div>
 </div>
 
-<!-- LİMİT -->
+<!-- ===== LİMİT ===== -->
 <div id="limit-modal" class="modal fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 space-y-3 shadow-2xl">
     <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -209,7 +276,7 @@
   </div>
 </div>
 
-<!-- BİLDİRİMLER -->
+<!-- ===== BİLDİRİMLER ===== -->
 <div id="notif-modal" class="modal fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 space-y-3 shadow-2xl max-h-[85vh] overflow-y-auto">
     <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -221,11 +288,11 @@
   </div>
 </div>
 
-<!-- TANITIM -->
+<!-- ===== TANITIM ===== -->
 <div id="intro" class="hidden fixed inset-0 z-[60] bg-slate-950 flex-col max-w-md mx-auto">
   <div class="flex-1 overflow-y-auto p-6 flex flex-col justify-center">
     <div class="intro-slide space-y-5 text-center" data-slide="0">
-      <img src="logo.webp" alt="BorderGuide" class="mx-auto w-44 h-44 drop-shadow-2xl" draggable="false">
+      <img src="logo.webp" alt="BorderGuide" class="mx-auto w-40 h-40 drop-shadow-2xl" draggable="false">
       <h2 class="text-2xl font-extrabold" data-i18n="intro1Title"></h2>
       <p class="text-sm text-slate-300" data-i18n="intro1Text"></p>
       <div class="text-left space-y-2 pt-2">
