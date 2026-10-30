@@ -1,4 +1,6 @@
 # BorderGuide indir
 
-- Telefona kur: **BorderGuide-1.0.3.apk** (imzalı)
-- Google Play için: **BorderGuide-1.0.3.aab**
+Güncel sürüm: **1.0.4** (sürüm kodu 4)
+
+- Telefona kur: **BorderGuide.apk** (imzalı)
+- Google Play için: **BorderGuide.aab**
