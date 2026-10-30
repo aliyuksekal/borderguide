@@ -57,7 +57,13 @@ jobs:
           if [ -n "$TP_TOKEN" ]; then echo "Uçuş fiyatları: açık"; else echo "::warning::TP_TOKEN secret yok; uçuş fiyatları kapalı derleniyor."; fi
 
       - name: Derle (APK + AAB)
-        run: gradle --no-daemon --stacktrace assembleRelease bundleRelease
+        run: |
+          set -o pipefail
+          if ! gradle --no-daemon assembleRelease bundleRelease 2>&1 | tee build.log; then
+            MSG=$(grep -E "error:|e: |What went wrong|Could not|Execution failed|> .*\\.java|cannot find symbol|symbol:|location:" build.log | head -40 | sed ':a;N;$!ba;s/\n/%0A/g')
+            echo "::error title=Derleme hatası::$MSG"
+            exit 1
+          fi
 
       - name: Doğrula ve dosyaları adlandır
         run: |
