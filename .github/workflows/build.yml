@@ -74,6 +74,16 @@ jobs:
           name: BorderGuide-${{ env.VERSION_NAME }}
           path: out/
 
+      - name: İmzasız çıktıyı 'unsigned-build' dalına koy
+        if: env.SIGNED == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd out
+          git init -q && git checkout -q -b unsigned-build
+          git add -A && git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -qm "unsigned $VERSION_NAME"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" unsigned-build
+
       - name: GitHub Release oluştur
         if: env.SIGNED == '1'
         env:
