@@ -214,3 +214,43 @@ window.LAW_UPDATES = [
   title:{tr:"Schengen: Giriş/Çıkış Sistemi (EES) tam devrede",en:"Schengen: Entry/Exit System (EES) fully operational",uz:"Shengen: kirish/chiqish tizimi (EES) to'liq ishlamoqda",ru:"Шенген: система въезда/выезда (EES) работает в полном объёме",ko:"솅겐: 출입국 시스템(EES) 전면 시행",zh:"申根：出入境系统（EES）全面运行"},
   body:{tr:"EES, 10 Nisan 2026'dan beri tüm Schengen dış sınır kapılarında çalışıyor. Kısa kalışlarda pasaport damgası yerine biyometrik dijital kayıt tutuluyor; 90/180 gün kuralı bu kayıtlarla takip ediliyor.",en:"EES has been fully operational at all Schengen external borders since 10 April 2026. Passport stamps for short stays are replaced by a biometric digital record, used to track the 90/180-day rule.",uz:"EES 2026-yil 10-apreldan beri barcha Shengen tashqi chegaralarida ishlaydi. Pasport muhri o'rniga biometrik raqamli yozuv yuritiladi; 90/180 qoidasi shu orqali kuzatiladi.",ru:"С 10 апреля 2026 г. EES работает на всех внешних границах Шенгена. Вместо штампов ведётся биометрическая цифровая запись, по ней отслеживается правило 90/180.",ko:"EES는 2026년 4월 10일부터 모든 솅겐 외부 국경에서 운영됩니다. 여권 도장 대신 생체 디지털 기록으로 90/180일 규칙을 관리합니다.",zh:"自2026年4月10日起，EES在所有申根外部边境全面运行。短期停留以生物识别电子记录取代护照盖章，并据此追踪90/180天规则。"} }
 ];
+
+// Uçuş fiyatları için şehirler: [IATA şehir kodu, Türkçe ad, İngilizce ad]
+window.ORIGIN_CITIES = [
+  ['IST','İstanbul','Istanbul'],['ANK','Ankara','Ankara'],['IZM','İzmir','Izmir'],['AYT','Antalya','Antalya'],
+  ['TAS','Taşkent','Tashkent'],['SKD','Semerkant','Samarkand'],['ALA','Almatı','Almaty'],['NQZ','Astana','Astana'],
+  ['BAK','Bakü','Baku'],['FRU','Bişkek','Bishkek'],['ASB','Aşkabat','Ashgabat'],['TBS','Tiflis','Tbilisi'],
+  ['MOW','Moskova','Moscow'],['LED','St. Petersburg','St Petersburg'],['SEL','Seul','Seoul'],['BJS','Pekin','Beijing'],
+  ['SHA','Şanghay','Shanghai'],['DXB','Dubai','Dubai'],['LON','Londra','London'],['BER','Berlin','Berlin'],
+  ['PAR','Paris','Paris'],['NYC','New York','New York']
+];
+window.DEST_CITIES = {
+  schengen:[['PAR','Paris','Paris'],['ROM','Roma','Rome'],['BER','Berlin','Berlin'],['BCN','Barselona','Barcelona'],['AMS','Amsterdam','Amsterdam'],['VIE','Viyana','Vienna'],['PRG','Prag','Prague'],['ATH','Atina','Athens'],['MIL','Milano','Milan'],['MAD','Madrid','Madrid']],
+  uk:[['LON','Londra','London'],['MAN','Manchester','Manchester']],
+  russia:[['MOW','Moskova','Moscow'],['LED','St. Petersburg','St Petersburg'],['KZN','Kazan','Kazan']],
+  georgia:[['TBS','Tiflis','Tbilisi'],['BUS','Batum','Batumi']],
+  ukraine:[],
+  turkey:[['IST','İstanbul','Istanbul'],['AYT','Antalya','Antalya'],['ANK','Ankara','Ankara'],['IZM','İzmir','Izmir'],['DLM','Dalaman','Dalaman'],['BJV','Bodrum','Bodrum']],
+  uzbekistan:[['TAS','Taşkent','Tashkent'],['SKD','Semerkant','Samarkand'],['BHK','Buhara','Bukhara'],['UGC','Ürgenç','Urgench']],
+  kazakhstan:[['ALA','Almatı','Almaty'],['NQZ','Astana','Astana'],['CIT','Şımkent','Shymkent']],
+  azerbaijan:[['BAK','Bakü','Baku']],
+  kyrgyzstan:[['FRU','Bişkek','Bishkek'],['OSS','Oş','Osh']],
+  turkmenistan:[['ASB','Aşkabat','Ashgabat']],
+  usa:[['NYC','New York','New York'],['LAX','Los Angeles','Los Angeles'],['MIA','Miami','Miami'],['CHI','Şikago','Chicago'],['SFO','San Francisco','San Francisco']],
+  canada:[['YTO','Toronto','Toronto'],['YMQ','Montreal','Montreal'],['YVR','Vancouver','Vancouver']],
+  brazil:[['SAO','São Paulo','São Paulo'],['RIO','Rio de Janeiro','Rio de Janeiro']],
+  argentina:[['BUE','Buenos Aires','Buenos Aires']],
+  australia:[['SYD','Sidney','Sydney'],['MEL','Melbourne','Melbourne']],
+  northkorea:[],
+  china:[['BJS','Pekin','Beijing'],['SHA','Şanghay','Shanghai'],['CAN','Guangzhou','Guangzhou'],['URC','Urumçi','Urumqi']],
+  japan:[['TYO','Tokyo','Tokyo'],['OSA','Osaka','Osaka']],
+  southkorea:[['SEL','Seul','Seoul'],['PUS','Busan','Busan']],
+  uae:[['DXB','Dubai','Dubai'],['AUH','Abu Dabi','Abu Dhabi']],
+  saudiarabia:[['RUH','Riyad','Riyadh'],['JED','Cidde','Jeddah']],
+  india:[['DEL','Delhi','Delhi'],['BOM','Mumbai','Mumbai'],['GOI','Goa','Goa']],
+  thailand:[['BKK','Bangkok','Bangkok'],['HKT','Phuket','Phuket']],
+  indonesia:[['DPS','Bali','Bali'],['JKT','Cakarta','Jakarta']],
+  vietnam:[['SGN','Ho Chi Minh','Ho Chi Minh City'],['HAN','Hanoi','Hanoi'],['DAD','Da Nang','Da Nang']],
+  egypt:[['CAI','Kahire','Cairo'],['HRG','Hurghada','Hurghada'],['SSH','Şarm El-Şeyh','Sharm El Sheikh']],
+  southafrica:[['JNB','Johannesburg','Johannesburg'],['CPT','Cape Town','Cape Town']]
+};

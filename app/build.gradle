@@ -5,6 +5,9 @@ plugins {
 // Sürüm numarası GitHub Actions çalıştırma numarasından gelir; her derleme bir öncekinin üstüne kurulur.
 def vCode = (System.getenv('VERSION_CODE') ?: '1').toInteger()
 def vName = System.getenv('VERSION_NAME') ?: '1.0.0'
+// Uçuş fiyatları için Travelpayouts bilgileri GitHub secret'larından gelir; repoda tutulmaz.
+def tpToken = (System.getenv('TP_TOKEN') ?: '').replaceAll('[^A-Za-z0-9]', '')
+def tpMarker = (System.getenv('TP_MARKER') ?: '').replaceAll('[^A-Za-z0-9]', '')
 
 android {
     namespace 'com.benim.borderguide'
@@ -16,6 +19,12 @@ android {
         targetSdk 36
         versionCode vCode
         versionName vName
+        buildConfigField 'String', 'TP_TOKEN', "\"${tpToken}\""
+        buildConfigField 'String', 'TP_MARKER', "\"${tpMarker}\""
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 
     signingConfigs {

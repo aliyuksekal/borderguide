@@ -20,6 +20,8 @@ jobs:
       VERSION_CODE: ${{ github.run_number }}
       VERSION_NAME: 1.0.${{ github.run_number }}
       KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      TP_TOKEN: ${{ secrets.TP_TOKEN }}
+      TP_MARKER: ${{ secrets.TP_MARKER }}
     steps:
       - uses: actions/checkout@v4
 
@@ -49,6 +51,10 @@ jobs:
             echo "::warning::KEYSTORE_BASE64 secret yok; imzasız derleniyor."
             echo "SIGNED=0" >> "$GITHUB_ENV"
           fi
+
+      - name: Uçuş fiyatı ayarı
+        run: |
+          if [ -n "$TP_TOKEN" ]; then echo "Uçuş fiyatları: açık"; else echo "::warning::TP_TOKEN secret yok; uçuş fiyatları kapalı derleniyor."; fi
 
       - name: Derle (APK + AAB)
         run: gradle --no-daemon --stacktrace assembleRelease bundleRelease

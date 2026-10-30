@@ -31,6 +31,7 @@ html.t-light { color-scheme: light; }
 .t-light .text-amber-400, .t-light .text-amber-300, .t-light .text-amber-400\/90 { color: #b45309 !important; }
 .t-light .text-red-400, .t-light .text-red-300 { color: #b91c1c !important; }
 .t-light .text-indigo-300, .t-light .text-indigo-400 { color: #4338ca !important; }
+.t-light .text-sky-400 { color: #0369a1 !important; }
 .t-light .card-hero { background: linear-gradient(135deg, #ffffff, #dbeafe) !important; border-color: #93c5fd !important; }
 .t-light .card-sim { background: linear-gradient(135deg, #eef2ff, #ffffff) !important; border-color: #a5b4fc !important; }
 .t-light .shadow-xl, .t-light .shadow-2xl { box-shadow: 0 10px 25px rgba(15,23,42,.08) !important; }

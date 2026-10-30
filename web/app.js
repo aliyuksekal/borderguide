@@ -4,7 +4,7 @@ const FEED_URL = 'https://raw.githubusercontent.com/aliyuksekal/borderguide/main
 const LANGS = [['tr','🇹🇷 Türkçe'],['en','🇬🇧 English'],['uz',"🇺🇿 O'zbekcha"],['ru','🇷🇺 Русский'],['ko','🇰🇷 한국어'],['zh','🇨🇳 中文']];
 const K = { trips:'borderguide_trips', lang:'borderguide_lang', theme:'borderguide_theme', limits:'borderguide_limits',
   read:'borderguide_read_updates', remote:'borderguide_remote_updates', lastCheck:'borderguide_last_check',
-  intro:'borderguide_intro_done', sel:'borderguide_sel_country', wiki:'borderguide_wiki_country' };
+  intro:'borderguide_intro_done', sel:'borderguide_sel_country', wiki:'borderguide_wiki_country', flFrom:'borderguide_fl_from' };
 
 const store = {
   get(k, fb){ try { const v = localStorage.getItem(k); return v === null ? fb : JSON.parse(v); } catch(e){ return fb; } },
@@ -422,6 +422,93 @@ async function checkLawUpdates(manual){
   if(manual){ btn.disabled = false; btn.textContent = t('btnCheck'); out.textContent = msg; out.classList.remove('hidden'); }
 }
 
+// ===== Uçuş fiyatları (Travelpayouts / Aviasales) =====
+const CUR = { tr:'TRY', en:'USD', uz:'USD', ru:'RUB', ko:'KRW', zh:'CNY' };
+const DEF_ORIGIN = { tr:'IST', en:'IST', uz:'TAS', ru:'MOW', ko:'SEL', zh:'BJS' };
+const cityName = c => lang === 'tr' ? c[1] : c[2];
+function flightsEnabled(){ try { return !!(window.AndroidBridge && AndroidBridge.flightsEnabled && AndroidBridge.flightsEnabled()); } catch(e){ return false; } }
+function fillFlightSelects(){
+  const from = $('fl-from'), to = $('fl-to');
+  const want = from.value || store.get(K.flFrom, null) || DEF_ORIGIN[lang] || 'IST';
+  from.innerHTML = ORIGIN_CITIES.map(c => `<option value="${c[0]}">${esc(cityName(c))} (${c[0]})</option>`).join('');
+  from.value = ORIGIN_CITIES.some(c => c[0] === want) ? want : 'IST';
+  const list = DEST_CITIES[selCountry()] || [], curTo = to.value;
+  to.innerHTML = list.length ? list.map(c => `<option value="${c[0]}">${esc(cityName(c))} (${c[0]})</option>`).join('') : '<option value="">–</option>';
+  if(list.some(c => c[0] === curTo)) to.value = curTo;
+  to.disabled = !list.length;
+}
+function renderFlightCard(){
+  fillFlightSelects();
+  const e = $('sim-entry').value, x = $('sim-exit').value;
+  $('fl-dates').textContent = !e ? t('flNeedDates') : (x && dn(x) >= dn(e)) ? `${t('flRound')}: ${fmtIso(e)} → ${fmtIso(x)}` : `${t('flOneway')}: ${fmtIso(e)}`;
+}
+let flSeq = 0; const flCbs = {};
+window.bgFlightCb = (id, body) => { const f = flCbs[id]; delete flCbs[id]; if(f) f(body); };
+function flightApi(params){
+  return new Promise((resolve, reject) => {
+    const id = 'f' + (++flSeq);
+    const timer = setTimeout(() => { delete flCbs[id]; reject(new Error('timeout')); }, 25000);
+    flCbs[id] = body => {
+      clearTimeout(timer);
+      try { const j = JSON.parse(body); if(!j || j.success !== true) return reject(new Error(String(j && j.error))); resolve(j); } catch(e){ reject(e); }
+    };
+    const q = Object.entries(params).map(([k, v]) => k + '=' + encodeURIComponent(v)).join('&');
+    try { AndroidBridge.flightPrices(q, id); } catch(e){ clearTimeout(timer); delete flCbs[id]; reject(e); }
+  });
+}
+function money(v, cur){ try { return new Intl.NumberFormat(lang, { style:'currency', currency:cur, maximumFractionDigits:0 }).format(v); } catch(e){ return Math.round(v) + ' ' + cur; } }
+function flTime(s){ const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(String(s || '')); return m ? `${m[3]}.${m[2]}.${m[1]} ${m[4]}:${m[5]}` : ''; }
+function flDur(m){ m = +m; return m > 0 ? `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}` : ''; }
+const flStops = n => +n ? t('flStops', { n:+n }) : t('flDirect');
+function flightRow(f, cur){
+  const al = /^[A-Z0-9]{2}$/.test(f.airline || '') ? f.airline : '';
+  const link = typeof f.link === 'string' && f.link.startsWith('/') ? f.link : '';
+  return `<div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center gap-3">
+    ${al ? `<img src="https://pics.avs.io/60/60/${al}.png" alt="${al}" class="w-9 h-9 rounded-lg bg-white shrink-0" onerror="this.style.display='none'">` : ''}
+    <div class="flex-1 min-w-0 text-[11px] text-slate-300 leading-snug">
+      <p class="text-base font-extrabold text-sky-400">${esc(money(f.price, cur))}</p>
+      <p><i class="fa-solid fa-plane-departure mr-1"></i>${esc(flTime(f.departure_at))} · ${esc(flStops(f.transfers))}${flDur(f.duration_to) ? ' · ' + flDur(f.duration_to) : ''}</p>
+      ${f.return_at ? `<p><i class="fa-solid fa-plane-arrival mr-1"></i>${esc(flTime(f.return_at))} · ${esc(flStops(f.return_transfers))}${flDur(f.duration_back) ? ' · ' + flDur(f.duration_back) : ''}</p>` : ''}
+      <p class="text-slate-500">${esc(al)} ${esc(f.flight_number || '')} · ${esc(f.origin_airport || f.origin || '')} → ${esc(f.destination_airport || f.destination || '')}</p>
+    </div>
+    ${link ? `<button onclick="openFlight(this)" data-link="${esc(link)}" class="bg-sky-600 text-white text-xs font-bold px-3 py-2 rounded-lg shrink-0 active:scale-95 transition-transform">${esc(t('flBook'))}</button>` : ''}
+  </div>`;
+}
+function openFlight(btn){
+  let url = 'https://www.aviasales.com' + btn.dataset.link, marker = '';
+  try { marker = (window.AndroidBridge && AndroidBridge.tpMarker && AndroidBridge.tpMarker()) || ''; } catch(e){}
+  if(marker) url += (url.includes('?') ? '&' : '?') + 'marker=' + encodeURIComponent(marker);
+  try { AndroidBridge.openUrl(url); } catch(e){ window.open(url, '_blank'); }
+}
+async function searchFlights(){
+  const out = $('fl-result'), btn = $('fl-btn');
+  const msg = (m, cls) => { out.innerHTML = `<p class="text-xs ${cls || 'text-slate-300'}">${esc(m)}</p>`; };
+  if(!(DEST_CITIES[selCountry()] || []).length) return msg(t('flNoFlights'), 'text-amber-400');
+  if(!flightsEnabled()) return msg(t('flOff'), 'text-amber-400');
+  const e = $('sim-entry').value, x = $('sim-exit').value;
+  if(!e || isNaN(dn(e))) return msg(t('flNeedDates'), 'text-amber-400');
+  const origin = $('fl-from').value, dest = $('fl-to').value;
+  if(origin === dest) return msg(t('flSame'), 'text-amber-400');
+  store.set(K.flFrom, origin);
+  const round = !!x && !isNaN(dn(x)) && dn(x) >= dn(e);
+  const cur = CUR[lang] || 'USD';
+  const base = { origin, destination:dest, currency:cur.toLowerCase(), sorting:'price', limit:5, one_way: round ? 'false' : 'true' };
+  btn.disabled = true; msg(t('flLoading'));
+  try {
+    let month = false;
+    let r = await flightApi({ ...base, departure_at:e, ...(round ? { return_at:x } : {}) });
+    let data = Array.isArray(r.data) ? r.data : [];
+    if(!data.length){
+      month = true;
+      r = await flightApi({ ...base, departure_at:e.slice(0, 7), ...(round ? { return_at:x.slice(0, 7) } : {}) });
+      data = Array.isArray(r.data) ? r.data : [];
+    }
+    if(!data.length) return msg(t('flNone'));
+    out.innerHTML = (month ? `<p class="text-xs text-amber-400">${esc(t('flMonth'))}</p>` : '') + data.slice(0, 5).map(f => flightRow(f, cur)).join('');
+  } catch(err){ msg(t('flError'), 'text-red-400'); }
+  finally { btn.disabled = false; }
+}
+
 // ===== Tanıtım ekranı =====
 let introStep = 0;
 function showIntro(step){
@@ -440,7 +527,7 @@ function introNext(){
 // ===== Başlat =====
 function renderAll(){
   store.set(K.sel, selCountry());
-  renderDashboard(); renderReg(); renderTrips(); renderWarnBar(); renderNotifs();
+  renderDashboard(); renderReg(); renderTrips(); renderWarnBar(); renderNotifs(); renderFlightCard();
   if(!$('tab-wiki').classList.contains('hidden')) renderWiki();
   if(!$('sim-result').classList.contains('hidden')) simulateTrip();
 }
@@ -452,7 +539,10 @@ function init(){
   const wk = store.get(K.wiki, 'schengen'); $('wiki-country').value = CMAP[wk] ? wk : 'schengen';
   setTheme(theme, false);
   document.querySelectorAll('.lang-select').forEach(s => s.addEventListener('change', e => changeLanguage(e.target.value)));
-  $('trip-country').addEventListener('change', () => { $('sim-result').classList.add('hidden'); renderAll(); });
+  $('trip-country').addEventListener('change', () => { $('sim-result').classList.add('hidden'); $('fl-result').innerHTML = ''; renderAll(); });
+  ['sim-entry','sim-exit'].forEach(i => ['change','input'].forEach(ev => $(i).addEventListener(ev, () => { $('fl-result').innerHTML = ''; renderFlightCard(); })));
+  $('fl-to').addEventListener('change', () => { $('fl-result').innerHTML = ''; });
+  $('fl-from').addEventListener('change', () => { store.set(K.flFrom, $('fl-from').value); $('fl-result').innerHTML = ''; });
   $('wiki-country').addEventListener('change', renderWiki);
   $('stay-type').addEventListener('change', renderReg);
   ['trip-entry','trip-exit'].forEach(i => ['change','input'].forEach(ev => $(i).addEventListener(ev, () => { renderReg(); renderWarnBar(); })));

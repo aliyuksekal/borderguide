@@ -87,6 +87,18 @@
     <button onclick="simulateTrip()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-sm shadow-md shadow-indigo-600/20 active:scale-95 transition-transform" data-i18n="btnSim"></button>
     <div id="sim-result" class="hidden text-xs p-3 rounded-xl border"></div>
   </div>
+  <div id="flight-card" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+    <h4 class="font-bold text-sm flex items-center"><i class="fa-solid fa-plane text-sky-400 mr-2"></i><span data-i18n="flTitle"></span></h4>
+    <p class="text-[11px] text-slate-400" data-i18n="flDesc"></p>
+    <div class="grid grid-cols-2 gap-2">
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="flFrom"></label><select id="fl-from" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none focus:border-blue-500"></select></div>
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="flTo"></label><select id="fl-to" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none focus:border-blue-500"></select></div>
+    </div>
+    <p id="fl-dates" class="text-[11px] text-slate-300"></p>
+    <button id="fl-btn" onclick="searchFlights()" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 rounded-xl text-sm active:scale-95 transition-transform" data-i18n="flBtn"></button>
+    <div id="fl-result" class="space-y-2"></div>
+    <p class="text-[10px] text-slate-500 leading-relaxed" data-i18n="flNote"></p>
+  </div>
 
   <div class="space-y-2">
     <h4 class="font-bold text-xs text-slate-400 uppercase tracking-wider" data-i18n="recentLogs"></h4>

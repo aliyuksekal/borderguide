@@ -43,3 +43,11 @@ Not: Uygulamanın bu dosyayı okuyabilmesi için reponun **Public** olması gere
 ## Arayüzde sınıf değiştirince
 
 Yeni Tailwind sınıfı eklediysen `node tools/build-css.mjs web` ile `web/app.css` yeniden üretilmeli.
+
+## Uçuş fiyatları (Travelpayouts)
+
+Uygulama, simülatörde seçilen tarihler için Aviasales'in önbellekteki en ucuz bilet fiyatlarını gösterir.
+Token repoda **tutulmaz**; derleme sırasında GitHub secret'larından alınır:
+
+- `TP_TOKEN`: Travelpayouts → Profil → API token (zorunlu; yoksa uçuş fiyatları kapalı derlenir)
+- `TP_MARKER`: Travelpayouts ortaklık numarası (isteğe bağlı; "Bilet ara" linklerine eklenir, komisyon için gerekir)

@@ -1,6 +1,7 @@
 // BorderGuide arayüz metinleri (6 dil). {x} şeklindeki yerler çalışma anında doldurulur.
 window.I18N = {
 tr: {
+  flTitle:"Uçuş fiyatları", flDesc:"Simülatördeki tarihler için en ucuz biletler.", flFrom:"Nereden", flTo:"Nereye", flBtn:"Fiyatları göster", flLoading:"Fiyatlar aranıyor…", flNeedDates:"Önce simülatörde planlanan giriş tarihini seç (dönüş için çıkış tarihini de).", flNone:"Bu rota ve tarihler için kayıtlı fiyat bulunamadı.", flMonth:"Bu tarihlerde kayıt yok; aynı ay için en ucuz fiyatlar:", flDirect:"Aktarmasız", flStops:"{n} aktarma", flBook:"Bilet ara", flNote:"Fiyatlar yaklaşıktır: diğer kullanıcıların son günlerde bulduğu en ucuz biletler. Kesin fiyat açılan sitede görünür.", flError:"Fiyatlar alınamadı. İnternetini kontrol et.", flOff:"Uçuş fiyatları bu sürümde henüz etkin değil.", flNoFlights:"Bu ülke için uçuş araması yapılamıyor.", flRound:"Gidiş-dönüş", flOneway:"Tek yön", flSame:"Kalkış ve varış aynı şehir olamaz.", flBack:"Dönüş",
   appSub:"Vize & kalış takibi", dataDate:"Bilgi tarihi", lastCheck:"Son kontrol", never:"henüz yok",
   navTracker:"Takip", navWiki:"Rehber", navSettings:"Ayarlar",
   activeRule:"Aktif kural", usedWin:"/ {n} gün · son {p} gün", usedStay:"/ {n} gün · bu kalış",
@@ -43,6 +44,7 @@ tr: {
   intro3Title:"Önemli uyarı", next:"İleri", start:"Başla"
 },
 en: {
+  flTitle:"Flight prices", flDesc:"Cheapest tickets for the simulator dates.", flFrom:"From", flTo:"To", flBtn:"Show prices", flLoading:"Searching prices…", flNeedDates:"First pick a planned entry date in the simulator (and an exit date for a return trip).", flNone:"No saved prices for this route and dates.", flMonth:"Nothing for these exact dates; cheapest prices for the same month:", flDirect:"Direct", flStops:"{n} stop(s)", flBook:"Search tickets", flNote:"Prices are approximate: the cheapest tickets other users found recently. The exact price is shown on the booking site.", flError:"Couldn't load prices. Check your internet.", flOff:"Flight prices are not enabled in this version yet.", flNoFlights:"Flight search isn't available for this country.", flRound:"Return", flOneway:"One way", flSame:"Origin and destination can't be the same city.", flBack:"Return",
   appSub:"Visa & stay tracker", dataDate:"Data as of", lastCheck:"Last check", never:"not yet",
   navTracker:"Tracker", navWiki:"Guide", navSettings:"Settings",
   activeRule:"Active rule", usedWin:"/ {n} days · last {p} days", usedStay:"/ {n} days · this stay",
@@ -85,6 +87,7 @@ en: {
   intro3Title:"Important", next:"Next", start:"Start"
 },
 uz: {
+  flTitle:"Aviachipta narxlari", flDesc:"Simulyatordagi sanalar uchun eng arzon chiptalar.", flFrom:"Qayerdan", flTo:"Qayerga", flBtn:"Narxlarni ko'rsatish", flLoading:"Narxlar qidirilmoqda…", flNeedDates:"Avval simulyatorda kirish sanasini tanlang (qaytish uchun chiqish sanasini ham).", flNone:"Bu yo'nalish va sanalar uchun narx topilmadi.", flMonth:"Aynan shu sanalar uchun yo'q; shu oydagi eng arzon narxlar:", flDirect:"To'g'ridan-to'g'ri", flStops:"{n} ta o'tish", flBook:"Chipta qidirish", flNote:"Narxlar taxminiy: boshqa foydalanuvchilar yaqinda topgan eng arzon chiptalar. Aniq narx ochilgan saytda ko'rinadi.", flError:"Narxlarni olib bo'lmadi. Internetni tekshiring.", flOff:"Bu versiyada aviachipta narxlari hali yoqilmagan.", flNoFlights:"Bu davlat uchun reys qidirish imkoni yo'q.", flRound:"Borish-qaytish", flOneway:"Bir tomonga", flSame:"Jo'nash va borish shahri bir xil bo'lmasin.", flBack:"Qaytish",
   appSub:"Viza va qolish nazorati", dataDate:"Ma'lumot sanasi", lastCheck:"Oxirgi tekshiruv", never:"hali yo'q",
   navTracker:"Kuzatish", navWiki:"Qo'llanma", navSettings:"Sozlamalar",
   activeRule:"Amaldagi qoida", usedWin:"/ {n} kun · oxirgi {p} kun", usedStay:"/ {n} kun · shu safar",
@@ -127,6 +130,7 @@ uz: {
   intro3Title:"Muhim ogohlantirish", next:"Keyingi", start:"Boshlash"
 },
 ru: {
+  flTitle:"Цены на авиабилеты", flDesc:"Самые дешёвые билеты на даты из симулятора.", flFrom:"Откуда", flTo:"Куда", flBtn:"Показать цены", flLoading:"Ищем цены…", flNeedDates:"Сначала выберите в симуляторе дату въезда (и дату выезда для обратного билета).", flNone:"Для этого маршрута и дат цен нет.", flMonth:"На эти даты ничего нет; самые дешёвые цены за этот месяц:", flDirect:"Без пересадок", flStops:"Пересадок: {n}", flBook:"Найти билеты", flNote:"Цены примерные: самые дешёвые билеты, найденные другими пользователями недавно. Точная цена — на сайте бронирования.", flError:"Не удалось загрузить цены. Проверьте интернет.", flOff:"Цены на авиабилеты пока не включены в этой версии.", flNoFlights:"Поиск рейсов в эту страну недоступен.", flRound:"Туда-обратно", flOneway:"В одну сторону", flSame:"Города вылета и прилёта не должны совпадать.", flBack:"Обратно",
   appSub:"Учёт виз и сроков пребывания", dataDate:"Данные на", lastCheck:"Последняя проверка", never:"ещё нет",
   navTracker:"Учёт", navWiki:"Справочник", navSettings:"Настройки",
   activeRule:"Действующее правило", usedWin:"/ {n} дн. · последние {p} дн.", usedStay:"/ {n} дн. · эта поездка",
@@ -169,6 +173,7 @@ ru: {
   intro3Title:"Важно", next:"Далее", start:"Начать"
 },
 ko: {
+  flTitle:"항공권 가격", flDesc:"시뮬레이터 날짜의 최저가 항공권.", flFrom:"출발", flTo:"도착", flBtn:"가격 보기", flLoading:"가격 검색 중…", flNeedDates:"먼저 시뮬레이터에서 입국 예정일을 선택하세요 (왕복은 출국일도).", flNone:"이 노선과 날짜의 가격 정보가 없습니다.", flMonth:"해당 날짜에는 없습니다. 같은 달의 최저가:", flDirect:"직항", flStops:"경유 {n}회", flBook:"항공권 검색", flNote:"가격은 대략적입니다: 다른 사용자가 최근 찾은 최저가 항공권입니다. 정확한 가격은 열리는 사이트에서 확인하세요.", flError:"가격을 불러올 수 없습니다. 인터넷을 확인하세요.", flOff:"이 버전에서는 아직 항공권 가격이 활성화되지 않았습니다.", flNoFlights:"이 국가는 항공편 검색을 지원하지 않습니다.", flRound:"왕복", flOneway:"편도", flSame:"출발지와 도착지가 같을 수 없습니다.", flBack:"귀국",
   appSub:"비자 및 체류 관리", dataDate:"정보 기준일", lastCheck:"마지막 확인", never:"아직 없음",
   navTracker:"추적", navWiki:"가이드", navSettings:"설정",
   activeRule:"적용 규칙", usedWin:"/ {n}일 · 최근 {p}일", usedStay:"/ {n}일 · 이번 체류",
@@ -211,6 +216,7 @@ ko: {
   intro3Title:"중요 안내", next:"다음", start:"시작"
 },
 zh: {
+  flTitle:"机票价格", flDesc:"模拟器所选日期的最低价机票。", flFrom:"出发地", flTo:"目的地", flBtn:"查看价格", flLoading:"正在搜索价格…", flNeedDates:"请先在模拟器中选择计划入境日期（往返还需离境日期）。", flNone:"该航线和日期暂无价格数据。", flMonth:"这些日期暂无数据；以下为同月最低价：", flDirect:"直飞", flStops:"{n} 次中转", flBook:"搜索机票", flNote:"价格仅供参考：为其他用户近期找到的最低价机票。准确价格以打开的网站为准。", flError:"无法获取价格，请检查网络。", flOff:"此版本尚未启用机票价格。", flNoFlights:"无法搜索前往该国的航班。", flRound:"往返", flOneway:"单程", flSame:"出发地和目的地不能相同。", flBack:"返程",
   appSub:"签证与停留管理", dataDate:"信息日期", lastCheck:"上次检查", never:"尚无",
   navTracker:"追踪", navWiki:"指南", navSettings:"设置",
   activeRule:"当前规则", usedWin:"/ {n} 天 · 最近 {p} 天", usedStay:"/ {n} 天 · 本次停留",

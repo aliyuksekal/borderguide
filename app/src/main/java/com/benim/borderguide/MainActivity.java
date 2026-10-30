@@ -16,6 +16,14 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import androidx.activity.ComponentActivity;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.OnBackPressedCallback;
@@ -126,6 +134,56 @@ public class MainActivity extends ComponentActivity {
         }
 
         @JavascriptInterface
+        public boolean flightsEnabled() {
+            return !BuildConfig.TP_TOKEN.isEmpty();
+        }
+
+        @JavascriptInterface
+        public String tpMarker() {
+            return BuildConfig.TP_MARKER;
+        }
+
+        @JavascriptInterface
+        public void openUrl(final String url) {
+            if (url == null || !url.startsWith("https://")) return;
+            runOnUiThread(() -> {
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                } catch (Exception ignored) { }
+            });
+        }
+
+        // Uçuş fiyatı isteği arka planda yapılır; sonuç window.bgFlightCb(id, json) ile web tarafına döner.
+        @JavascriptInterface
+        public void flightPrices(final String query, final String cbId) {
+            if (query == null || cbId == null || BuildConfig.TP_TOKEN.isEmpty()) return;
+            if (!query.matches("[A-Za-z0-9=&_.%-]{1,600}") || !cbId.matches("[a-z0-9]{1,20}")) return;
+            new Thread(() -> {
+                String body;
+                HttpURLConnection c = null;
+                try {
+                    URL u = new URL("https://api.travelpayouts.com/aviasales/v3/prices_for_dates?" + query);
+                    c = (HttpURLConnection) u.openConnection();
+                    c.setConnectTimeout(10000);
+                    c.setReadTimeout(15000);
+                    c.setRequestProperty("X-Access-Token", BuildConfig.TP_TOKEN);
+                    c.setRequestProperty("Accept", "application/json");
+                    int code = c.getResponseCode();
+                    body = readAll(code >= 400 ? c.getErrorStream() : c.getInputStream());
+                    if (code >= 400 || body.isEmpty()) body = "{\"success\":false,\"error\":\"HTTP " + code + "\"}";
+                } catch (Exception e) {
+                    body = "{\"success\":false,\"error\":\"network\"}";
+                } finally {
+                    if (c != null) c.disconnect();
+                }
+                final String js = "window.bgFlightCb && window.bgFlightCb(" + JSONObject.quote(cbId) + "," + JSONObject.quote(body) + ")";
+                runOnUiThread(() -> {
+                    if (web != null) web.evaluateJavascript(js, null);
+                });
+            }).start();
+        }
+
+        @JavascriptInterface
         public boolean isSystemDark() {
             return (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
         }
@@ -138,6 +196,16 @@ public class MainActivity extends ComponentActivity {
                 return "";
             }
         }
+    }
+
+    private static String readAll(InputStream in) throws IOException {
+        if (in == null) return "";
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] buf = new byte[8192];
+        int n;
+        while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
+        in.close();
+        return out.toString("UTF-8");
     }
 
     @Override
