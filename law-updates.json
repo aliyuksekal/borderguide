@@ -1,0 +1,117 @@
+[
+  {
+    "id": "kg-2026-09",
+    "country": "kyrgyzstan",
+    "flag": "🇰🇬",
+    "date": "2026-09-08",
+    "source": "economist.kg",
+    "title": {
+      "tr": "Kırgızistan: yabancı kayıt usulü yeniden düzenlendi",
+      "en": "Kyrgyzstan: foreigner registration procedure revised",
+      "uz": "Qirg'iziston: chet elliklarni ro'yxatga olish tartibi o'zgardi",
+      "ru": "Кыргызстан: изменён порядок регистрации иностранцев",
+      "ko": "키르기스스탄: 외국인 등록 절차 개정",
+      "zh": "吉尔吉斯斯坦：修订外国人登记程序"
+    },
+    "body": {
+      "tr": "4 Eylül 2026 tarihli 600 sayılı Bakanlar Kurulu kararıyla yabancıların kayıt usulü yeniden belirlendi; 7 Eylül tarihli 602 sayılı kararla kalış kurallarında değişiklik yapıldı. Önceki düzenlemede genel kural girişten itibaren 5 iş günü içinde kayıttı. Yeni ayrıntılar için resmî kaynağı kontrol et.",
+      "en": "Cabinet Resolution No. 600 (4 Sep 2026) set a new registration procedure for foreigners and No. 602 (7 Sep 2026) amended the stay rules. Previously registration was due within 5 working days of entry. Check the official source for the new details.",
+      "uz": "2026-yil 4-sentyabrdagi 600-son qaror bilan chet elliklarni ro'yxatga olish tartibi yangilandi, 7-sentyabrdagi 602-son qaror bilan qolish qoidalari o'zgardi. Avval kirishdan 5 ish kuni ichida ro'yxatdan o'tish kerak edi. Tafsilotlarni rasmiy manbadan tekshiring.",
+      "ru": "Постановлением Кабмина №600 от 4 сентября 2026 г. установлен новый порядок регистрации иностранцев, постановлением №602 от 7 сентября изменены правила пребывания. Ранее регистрация требовалась в течение 5 рабочих дней. Подробности уточните в официальном источнике.",
+      "ko": "2026년 9월 4일 내각 결의 제600호로 외국인 등록 절차가 새로 정해졌고, 9월 7일 제602호로 체류 규정이 개정되었습니다. 기존에는 입국 후 5영업일 내 등록이었습니다. 자세한 내용은 공식 출처를 확인하세요.",
+      "zh": "2026年9月4日第600号内阁决议重新规定了外国人登记程序，9月7日第602号决议修改了停留规定。此前须在入境后5个工作日内登记。详情请查阅官方来源。"
+    }
+  },
+  {
+    "id": "uz-2026-07",
+    "country": "uzbekistan",
+    "flag": "🇺🇿",
+    "date": "2026-07-23",
+    "source": "kun.uz (23.07.2026)",
+    "title": {
+      "tr": "Özbekistan: yabancı misafir kaydında denetim sıkılaşıyor",
+      "en": "Uzbekistan: tighter enforcement of foreign guest registration",
+      "uz": "O'zbekiston: chet ellik mehmonlarni ro'yxatga olish nazorati kuchaymoqda",
+      "ru": "Узбекистан: ужесточается контроль регистрации иностранцев",
+      "ko": "우즈베키스탄: 외국인 숙박 등록 단속 강화",
+      "zh": "乌兹别克斯坦：加强外国住客登记监管"
+    },
+    "body": {
+      "tr": "Milletvekilleri, konaklama tesislerinin yabancı misafirleri kurallara uygun kaydetmediğini belirterek denetimin sıkılaştırılmasını görüştü. Geçici kayıt süresi 3 gündür (hafta sonu ve resmî tatil hariç). Oteller kaydı E-mehmon ile yapar; özel konutta ev sahibi yaptırır.",
+      "en": "Lawmakers said accommodation providers often fail to register foreign guests properly and discussed tighter enforcement. Temporary registration is due within 3 days (excluding weekends and holidays). Hotels register via E-mehmon; in private housing the host does it.",
+      "uz": "Deputatlar joylashtirish vositalari chet ellik mehmonlarni to'g'ri ro'yxatdan o'tkazmayotganini aytib, nazoratni kuchaytirishni muhokama qildi. Vaqtinchalik ro'yxat muddati 3 kun (dam olish kunlarisiz).",
+      "ru": "Депутаты отметили, что места размещения часто не регистрируют иностранцев должным образом, и обсудили ужесточение контроля. Временная регистрация — в течение 3 дней (без выходных и праздников).",
+      "ko": "의원들은 숙박업소가 외국인 투숙객을 제대로 등록하지 않는다며 단속 강화를 논의했습니다. 임시 등록 기한은 3일(주말·공휴일 제외)입니다.",
+      "zh": "议员指出住宿机构常未按规定登记外国住客，并讨论加强监管。临时登记期限为3天（不含周末和节假日）。"
+    }
+  },
+  {
+    "id": "kz-2026-07",
+    "country": "kazakhstan",
+    "flag": "🇰🇿",
+    "date": "2026-07-01",
+    "source": "Kazakistan İçişleri Bakanlığı",
+    "title": {
+      "tr": "Kazakistan: yeni göç kaydı kuralları yürürlükte",
+      "en": "Kazakhstan: new migration registration rules in force",
+      "uz": "Qozog'iston: yangi migratsiya ro'yxati qoidalari kuchga kirdi",
+      "ru": "Казахстан: вступили в силу новые правила регистрации",
+      "ko": "카자흐스탄: 새 이민 등록 규정 시행",
+      "zh": "哈萨克斯坦：新移民登记规定生效"
+    },
+    "body": {
+      "tr": "1 Temmuz 2026'dan itibaren, vizesiz en fazla 90 gün kalabilen ülkelerin vatandaşlarının girişten itibaren 30 takvim günü içinde kayıt olması gerekiyor. Adresi ev sahibi veya otel onaylar; onaylanmazsa kayıt reddedilebilir. Kendi vatandaşlığın için kapsamı resmî kaynaktan doğrula.",
+      "en": "From 1 July 2026, citizens of countries with up to 90 days visa-free stay must register within 30 calendar days of entry. The host or hotel confirms the address; otherwise registration can be refused. Check coverage for your nationality.",
+      "uz": "2026-yil 1-iyuldan vizasiz 90 kungacha qolish huquqiga ega davlatlar fuqarolari kirishdan 30 kalendar kun ichida ro'yxatdan o'tishi kerak. Manzilni uy egasi yoki mehmonxona tasdiqlaydi.",
+      "ru": "С 1 июля 2026 г. граждане стран с безвизовым пребыванием до 90 дней должны зарегистрироваться в течение 30 календарных дней с въезда. Адрес подтверждает принимающая сторона или отель.",
+      "ko": "2026년 7월 1일부터 최대 90일 무비자 체류 국가 국민은 입국 후 30일 이내 등록해야 합니다. 주소는 집주인이나 호텔이 확인합니다.",
+      "zh": "自2026年7月1日起，可免签停留最多90天的国家公民须在入境后30个自然日内登记。地址由房东或酒店确认。"
+    }
+  },
+  {
+    "id": "eu-etias-2026-07",
+    "country": "schengen",
+    "flag": "🇪🇺",
+    "date": "2026-07-15",
+    "source": "AB ETIAS portalı",
+    "title": {
+      "tr": "Schengen: ETIAS için kesin tarih yok",
+      "en": "Schengen: no firm ETIAS start date",
+      "uz": "Shengen: ETIAS uchun aniq sana yo'q",
+      "ru": "Шенген: точной даты запуска ETIAS нет",
+      "ko": "솅겐: ETIAS 시행일 미정",
+      "zh": "申根：ETIAS 启用日期未定"
+    },
+    "body": {
+      "tr": "ETIAS (vizesiz yolcular için ön izin) henüz çalışmıyor. Eski hedef 2026'nın son çeyreğiydi; tarih 2027'ye kayabilir ve başlangıçtan aylar önce duyurulacak. Şu an başvuru alan resmî bir site yok; sahte sitelere dikkat.",
+      "en": "ETIAS (pre-travel authorisation for visa-exempt travellers) is not operating yet. The earlier target was Q4 2026; it may slip to 2027 and will be announced months ahead. No official site accepts applications yet; beware of fake sites.",
+      "uz": "ETIAS hali ishlamayapti. Avvalgi maqsad 2026-yil oxiri edi; 2027-yilga surilishi mumkin. Hozir ariza qabul qiladigan rasmiy sayt yo'q; soxta saytlardan ehtiyot bo'ling.",
+      "ru": "ETIAS пока не работает. Прежняя цель — конец 2026 г.; запуск может сдвинуться на 2027 г. и будет объявлен заранее. Официальных сайтов для подачи пока нет — остерегайтесь мошенников.",
+      "ko": "ETIAS는 아직 시행되지 않았습니다. 기존 목표는 2026년 4분기였으나 2027년으로 미뤄질 수 있습니다. 현재 신청을 받는 공식 사이트는 없으니 가짜 사이트에 주의하세요.",
+      "zh": "ETIAS尚未启用。原定2026年第四季度，可能推迟至2027年，并会提前数月公布。目前没有接受申请的官方网站，谨防假网站。"
+    }
+  },
+  {
+    "id": "eu-ees-2026-04",
+    "country": "schengen",
+    "flag": "🇪🇺",
+    "date": "2026-04-10",
+    "source": "AB Komisyonu",
+    "title": {
+      "tr": "Schengen: Giriş/Çıkış Sistemi (EES) tam devrede",
+      "en": "Schengen: Entry/Exit System (EES) fully operational",
+      "uz": "Shengen: kirish/chiqish tizimi (EES) to'liq ishlamoqda",
+      "ru": "Шенген: система въезда/выезда (EES) работает в полном объёме",
+      "ko": "솅겐: 출입국 시스템(EES) 전면 시행",
+      "zh": "申根：出入境系统（EES）全面运行"
+    },
+    "body": {
+      "tr": "EES, 10 Nisan 2026'dan beri tüm Schengen dış sınır kapılarında çalışıyor. Kısa kalışlarda pasaport damgası yerine biyometrik dijital kayıt tutuluyor; 90/180 gün kuralı bu kayıtlarla takip ediliyor.",
+      "en": "EES has been fully operational at all Schengen external borders since 10 April 2026. Passport stamps for short stays are replaced by a biometric digital record, used to track the 90/180-day rule.",
+      "uz": "EES 2026-yil 10-apreldan beri barcha Shengen tashqi chegaralarida ishlaydi. Pasport muhri o'rniga biometrik raqamli yozuv yuritiladi; 90/180 qoidasi shu orqali kuzatiladi.",
+      "ru": "С 10 апреля 2026 г. EES работает на всех внешних границах Шенгена. Вместо штампов ведётся биометрическая цифровая запись, по ней отслеживается правило 90/180.",
+      "ko": "EES는 2026년 4월 10일부터 모든 솅겐 외부 국경에서 운영됩니다. 여권 도장 대신 생체 디지털 기록으로 90/180일 규칙을 관리합니다.",
+      "zh": "自2026年4月10日起，EES在所有申根外部边境全面运行。短期停留以生物识别电子记录取代护照盖章，并据此追踪90/180天规则。"
+    }
+  }
+]

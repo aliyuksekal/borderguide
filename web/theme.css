@@ -1,0 +1,50 @@
+/* BorderGuide tema katmanı: koyu (varsayılan), açık ve AMOLED */
+:root { color-scheme: dark; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overscroll-behavior: none; }
+body { -webkit-font-smoothing: antialiased; }
+input, select, textarea { user-select: text; -webkit-user-select: text; font-size: 16px; }
+input[type="date"] { min-height: 44px; cursor: pointer; }
+select optgroup { font-weight: 700; }
+button { cursor: pointer; }
+button:disabled { opacity: .6; }
+
+.theme-btn { padding: .65rem 0; border-radius: .75rem; font-size: .875rem; font-weight: 600; border: 1px solid #334155; background: #020617; color: #cbd5e1; }
+.theme-btn.active { background: #2563eb; border-color: #3b82f6; color: #fff; box-shadow: 0 4px 12px rgba(37,99,235,.3); }
+
+/* ---------- AÇIK TEMA ---------- */
+html.t-light { color-scheme: light; }
+.t-light body, .t-light .bg-slate-950 { background-color: #f1f5f9 !important; }
+.t-light input.bg-slate-950, .t-light select.bg-slate-950, .t-light button.bg-slate-950 { background-color: #fff !important; }
+.t-light .bg-slate-900, .t-light .bg-slate-900\/50 { background-color: #fff !important; }
+.t-light .bg-slate-800, .t-light .bg-slate-800\/80 { background-color: #e2e8f0 !important; }
+.t-light .bg-black\/30, .t-light .bg-black\/40, .t-light .bg-black\/50 { background-color: #f1f5f9 !important; }
+.t-light .bg-black\/80 { background-color: rgba(15,23,42,.55) !important; }
+.t-light .border-slate-800, .t-light .border-slate-800\/80, .t-light .border-slate-800\/60 { border-color: #e2e8f0 !important; }
+.t-light .border-slate-700 { border-color: #cbd5e1 !important; }
+.t-light .text-slate-100 { color: #0f172a !important; }
+.t-light .text-slate-200 { color: #1e293b !important; }
+.t-light .text-slate-300 { color: #334155 !important; }
+.t-light .text-slate-400 { color: #475569 !important; }
+.t-light .text-slate-500 { color: #64748b !important; }
+.t-light .text-blue-400 { color: #1d4ed8 !important; }
+.t-light .text-emerald-400, .t-light .text-emerald-300 { color: #047857 !important; }
+.t-light .text-amber-400, .t-light .text-amber-300, .t-light .text-amber-400\/90 { color: #b45309 !important; }
+.t-light .text-red-400, .t-light .text-red-300 { color: #b91c1c !important; }
+.t-light .text-indigo-300, .t-light .text-indigo-400 { color: #4338ca !important; }
+.t-light .card-hero { background: linear-gradient(135deg, #ffffff, #dbeafe) !important; border-color: #93c5fd !important; }
+.t-light .card-sim { background: linear-gradient(135deg, #eef2ff, #ffffff) !important; border-color: #a5b4fc !important; }
+.t-light .shadow-xl, .t-light .shadow-2xl { box-shadow: 0 10px 25px rgba(15,23,42,.08) !important; }
+.t-light .theme-btn { background: #fff; border-color: #cbd5e1; color: #334155; }
+.t-light .theme-btn.active { background: #2563eb; border-color: #2563eb; color: #fff; }
+.t-light #toast { background: #0f172a !important; color: #fff !important; }
+.t-light #warn-bar, .t-light #warn-bar * { color: #fff !important; }
+
+/* ---------- AMOLED ---------- */
+.t-amoled body, .t-amoled .bg-slate-950 { background-color: #000 !important; }
+.t-amoled .bg-slate-900, .t-amoled .bg-slate-900\/50 { background-color: #0a0a0a !important; }
+.t-amoled .bg-slate-800, .t-amoled .bg-slate-800\/80 { background-color: #141414 !important; }
+.t-amoled .border-slate-800, .t-amoled .border-slate-800\/80, .t-amoled .border-slate-800\/60 { border-color: #1f1f1f !important; }
+.t-amoled .border-slate-700 { border-color: #2a2a2a !important; }
+.t-amoled .card-hero, .t-amoled .card-sim { background: #0a0a0a !important; }
+.t-amoled .theme-btn { background: #000; border-color: #2a2a2a; }
+.t-amoled .theme-btn.active { background: #2563eb; border-color: #3b82f6; }

@@ -1,0 +1,84 @@
+name: APK ve AAB derle
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['law-updates.json', '**.md', 'store/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      VERSION_CODE: ${{ github.run_number }}
+      VERSION_NAME: 1.0.${{ github.run_number }}
+      KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.14.3'
+
+      - name: İmza ayarı
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+            {
+              echo "KEYSTORE_FILE=$RUNNER_TEMP/release.jks"
+              echo "KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD"
+              echo "KEY_PASSWORD=$KEYSTORE_PASSWORD"
+              echo "KEY_ALIAS=borderguide"
+              echo "SIGNED=1"
+            } >> "$GITHUB_ENV"
+          else
+            echo "::warning::KEYSTORE_BASE64 secret yok; imzasız derleniyor."
+            echo "SIGNED=0" >> "$GITHUB_ENV"
+          fi
+
+      - name: Derle (APK + AAB)
+        run: gradle --no-daemon --stacktrace assembleRelease bundleRelease
+
+      - name: Doğrula ve dosyaları adlandır
+        run: |
+          BT="$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)"
+          mkdir -p out
+          if [ "$SIGNED" = "1" ]; then
+            "$BT/apksigner" verify --print-certs app/build/outputs/apk/release/app-release.apk
+            cp app/build/outputs/apk/release/app-release.apk "out/BorderGuide-$VERSION_NAME.apk"
+            cp app/build/outputs/bundle/release/app-release.aab "out/BorderGuide-$VERSION_NAME.aab"
+            rm -f "$RUNNER_TEMP/release.jks"
+          else
+            cp app/build/outputs/apk/release/app-release-unsigned.apk "out/unsigned-$VERSION_NAME.apk"
+            cp app/build/outputs/bundle/release/app-release.aab "out/unsigned-$VERSION_NAME.aab"
+            cp "$BT/lib/apksigner.jar" "$BT/zipalign" out/
+          fi
+          ls -la out
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BorderGuide-${{ env.VERSION_NAME }}
+          path: out/
+
+      - name: GitHub Release oluştur
+        if: env.SIGNED == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v$VERSION_NAME" out/*.apk out/*.aab \
+            --title "BorderGuide $VERSION_NAME" \
+            --notes "Sürüm kodu: $VERSION_CODE. APK telefona doğrudan kurulur (öncekinin üstüne). AAB Google Play Console içindir."

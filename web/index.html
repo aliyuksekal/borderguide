@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>BorderGuide</title>
+<link rel="stylesheet" href="fa/css/all.min.css">
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="theme.css">
+</head>
+<body id="app-body" class="flex flex-col h-screen max-w-md mx-auto select-none bg-slate-950 text-slate-100">
+
+<header id="app-header" class="bg-slate-900 border-b border-slate-800 px-3 py-2.5 flex justify-between items-center z-40 shrink-0">
+  <div class="flex items-center gap-2 min-w-0">
+    <div class="bg-blue-600 text-white w-9 h-9 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0"><i class="fa-solid fa-passport"></i></div>
+    <div class="min-w-0">
+      <h1 class="font-bold text-sm tracking-wide text-slate-100">BorderGuide</h1>
+      <p class="text-[10px] text-slate-400 truncate"><span data-i18n="dataDate"></span> <span id="hdr-data-date"></span></p>
+    </div>
+  </div>
+  <button onclick="openModal('notif-modal')" aria-label="notifications" class="relative bg-slate-800/80 border border-slate-700 text-amber-400 w-10 h-10 rounded-xl flex items-center justify-center active:scale-95 transition-transform">
+    <i class="fa-solid fa-bell"></i>
+    <span id="notif-badge" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] px-1 items-center justify-center">0</span>
+  </button>
+</header>
+<div id="warn-bar" class="hidden bg-red-600 text-white px-3 py-2 space-y-0.5 z-30 shadow-lg shrink-0"></div>
+
+<main id="main" class="flex-1 overflow-y-auto p-4 pb-6 space-y-5">
+
+<!-- TAKİP -->
+<section id="tab-dashboard" class="space-y-5">
+  <div class="card-hero bg-gradient-to-br from-slate-900 to-blue-950/40 border border-blue-500/30 rounded-3xl p-5 shadow-xl">
+    <div class="flex justify-between items-start gap-3 mb-4">
+      <div class="min-w-0">
+        <span class="bg-blue-500/10 text-blue-400 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider" data-i18n="activeRule"></span>
+        <h3 id="rule-title" class="font-extrabold text-lg mt-2 leading-tight"></h3>
+        <p id="rule-desc" class="text-xs text-slate-400 mt-0.5"></p>
+        <p id="rule-src" class="text-[10px] text-slate-500 mt-0.5"></p>
+      </div>
+      <div class="text-right shrink-0">
+        <span id="days-used" class="text-3xl font-black text-blue-400">0</span>
+        <span id="days-used-label" class="text-[10px] text-slate-500 block"></span>
+      </div>
+    </div>
+    <div id="progress-wrap" class="w-full bg-black/40 rounded-full h-3 mb-3 p-0.5 border border-slate-800"><div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-emerald-400 h-2 rounded-full transition-all duration-500" style="width:0%"></div></div>
+    <div class="flex justify-between items-center text-xs pt-2 border-t border-slate-800/60">
+      <span class="text-slate-400" data-i18n="remaining"></span>
+      <span id="days-remaining" class="font-bold text-emerald-400 text-sm"></span>
+    </div>
+    <button onclick="openLimitModal()" class="mt-3 text-[11px] text-blue-400 font-semibold flex items-center"><i class="fa-solid fa-sliders mr-1.5"></i><span data-i18n="editLimit"></span></button>
+  </div>
+
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+    <h4 class="font-bold text-sm flex items-center"><i class="fa-solid fa-plane-departure text-blue-400 mr-2"></i><span data-i18n="logTitle"></span></h4>
+    <div class="space-y-2.5">
+      <div>
+        <label class="block text-[10px] text-slate-400 mb-1" data-i18n="countryLbl"></label>
+        <select id="trip-country" class="country-select w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500"></select>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="entryLabel"></label><input type="date" id="trip-entry" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none focus:border-blue-500"></div>
+        <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="exitLabel"></label><input type="date" id="trip-exit" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none focus:border-blue-500"></div>
+      </div>
+      <div>
+        <label class="block text-[10px] text-slate-400 mb-1" data-i18n="stayType"></label>
+        <select id="stay-type" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none focus:border-blue-500">
+          <option value="hotel" data-i18n="hotel"></option>
+          <option value="home" data-i18n="home"></option>
+        </select>
+      </div>
+      <div id="reg-info" class="bg-amber-500/5 border border-amber-500/30 rounded-xl p-3 space-y-1.5 text-[11px] text-slate-300 leading-relaxed"></div>
+      <p id="add-error" class="hidden text-xs text-red-400"></p>
+      <button onclick="addTrip()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-blue-600/20 active:scale-95 transition-transform" data-i18n="btnAdd"></button>
+    </div>
+  </div>
+
+  <div class="card-sim bg-gradient-to-br from-indigo-950/60 to-slate-900 border border-indigo-500/40 rounded-2xl p-4 space-y-3">
+    <h4 class="font-bold text-xs text-indigo-300 uppercase tracking-wider flex items-center"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-indigo-400"></i><span data-i18n="simTitle"></span></h4>
+    <p class="text-[11px] text-slate-300" data-i18n="simDesc"></p>
+    <p class="text-[11px] text-slate-400"><span data-i18n="countryLbl"></span>: <b id="sim-country" class="text-slate-200"></b></p>
+    <div class="grid grid-cols-2 gap-2">
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="simEntryLbl"></label><input type="date" id="sim-entry" class="w-full bg-slate-950 border border-indigo-500/50 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none"></div>
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="simExitLbl"></label><input type="date" id="sim-exit" class="w-full bg-slate-950 border border-indigo-500/50 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none"></div>
+    </div>
+    <button onclick="simulateTrip()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-sm shadow-md shadow-indigo-600/20 active:scale-95 transition-transform" data-i18n="btnSim"></button>
+    <div id="sim-result" class="hidden text-xs p-3 rounded-xl border"></div>
+  </div>
+
+  <div class="space-y-2">
+    <h4 class="font-bold text-xs text-slate-400 uppercase tracking-wider" data-i18n="recentLogs"></h4>
+    <div id="trip-list" class="space-y-2"></div>
+  </div>
+</section>
+
+<!-- REHBER -->
+<section id="tab-wiki" class="hidden space-y-4">
+  <div>
+    <h2 class="font-bold text-lg" data-i18n="wikiTitle"></h2>
+    <p class="text-xs text-slate-400" data-i18n="wikiDesc"></p>
+  </div>
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2">
+    <label class="block text-xs font-semibold text-slate-400 uppercase" data-i18n="selectCountry"></label>
+    <select id="wiki-country" class="country-select w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500"></select>
+  </div>
+  <div id="wiki-card"></div>
+</section>
+
+</main>
+
+<nav id="app-nav" class="bg-slate-900 border-t border-slate-800 py-2 flex justify-evenly items-center z-40 shrink-0">
+  <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn flex flex-col items-center text-blue-400 gap-0.5 px-4 py-1"><i class="fa-solid fa-chart-pie text-lg"></i><span class="text-[10px] font-semibold" data-i18n="navTracker"></span></button>
+  <button onclick="switchTab('wiki')" id="nav-wiki" class="nav-btn flex flex-col items-center text-slate-400 gap-0.5 px-4 py-1"><i class="fa-solid fa-book-atlas text-lg"></i><span class="text-[10px] font-semibold" data-i18n="navWiki"></span></button>
+  <button onclick="openModal('settings-modal')" class="flex flex-col items-center text-slate-400 gap-0.5 px-4 py-1"><i class="fa-solid fa-gear text-lg"></i><span class="text-[10px] font-semibold" data-i18n="navSettings"></span></button>
+</nav>
+
+<!-- AYARLAR -->
+<div id="settings-modal" class="modal fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <h3 class="font-bold text-base flex items-center"><i class="fa-solid fa-sliders mr-2 text-blue-400"></i><span data-i18n="settingsTitle"></span></h3>
+      <button onclick="closeModal('settings-modal')" class="text-slate-400 p-1" aria-label="close"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <div class="space-y-2">
+      <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="setLang"></label>
+      <select id="lang-selector" class="lang-select w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500"></select>
+    </div>
+    <div class="space-y-2">
+      <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="setTheme"></label>
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="setTheme('light')" id="theme-btn-light" class="theme-btn" data-i18n="themeLight"></button>
+        <button onclick="setTheme('dark')" id="theme-btn-dark" class="theme-btn" data-i18n="themeDark"></button>
+        <button onclick="setTheme('amoled')" id="theme-btn-amoled" class="theme-btn" data-i18n="themeAmoled"></button>
+        <button onclick="setTheme('auto')" id="theme-btn-auto" class="theme-btn" data-i18n="themeAuto"></button>
+      </div>
+    </div>
+    <div class="space-y-2 border-t border-slate-800 pt-4">
+      <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider"><i class="fa-solid fa-rotate mr-1"></i><span data-i18n="lawTitle"></span></h4>
+      <p class="text-xs text-slate-300" data-i18n="lawDesc"></p>
+      <p class="text-[11px] text-slate-400"><span data-i18n="lastCheck"></span>: <span id="last-check"></span></p>
+      <button id="btn-check" onclick="checkLawUpdates(true)" class="w-full bg-slate-950 border border-slate-700 text-slate-200 font-bold py-2.5 rounded-xl text-sm" data-i18n="btnCheck"></button>
+      <p id="check-result" class="text-xs text-slate-300 hidden"></p>
+    </div>
+    <div class="border-t border-slate-800 pt-4 space-y-2">
+      <button onclick="openModal('privacy-modal')" class="w-full text-left text-sm text-blue-400 font-semibold flex items-center"><i class="fa-solid fa-shield-halved mr-2"></i><span data-i18n="privacyBtn"></span></button>
+      <p class="text-[11px] text-slate-500"><span data-i18n="version"></span> <span id="app-version">1.0</span> · matali</p>
+    </div>
+    <button onclick="closeModal('settings-modal')" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl text-sm" data-i18n="done"></button>
+  </div>
+</div>
+
+<!-- GİZLİLİK -->
+<div id="privacy-modal" class="modal fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 space-y-3 shadow-2xl max-h-[85vh] overflow-y-auto">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <h3 class="font-bold text-base" data-i18n="privacyTitle"></h3>
+      <button onclick="closeModal('privacy-modal')" class="text-slate-400 p-1" aria-label="close"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <p class="text-sm text-slate-300 leading-relaxed" data-i18n="privacyText"></p>
+    <p class="text-sm text-slate-300 leading-relaxed" data-i18n="legalText"></p>
+    <p class="text-xs text-amber-400" data-i18n="dataNote"></p>
+    <p class="text-xs text-slate-400"><span data-i18n="contact"></span>: matali.truz@gmail.com</p>
+  </div>
+</div>
+
+<!-- KAYIT DÜZENLE -->
+<div id="edit-modal" class="modal fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 space-y-3 shadow-2xl">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <h3 class="font-bold text-base flex items-center"><i class="fa-solid fa-pen mr-2 text-blue-400"></i><span data-i18n="editTitle"></span></h3>
+      <button onclick="closeModal('edit-modal')" class="text-slate-400 p-1" aria-label="close"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <select id="edit-country" class="country-select w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-3 text-sm focus:outline-none focus:border-blue-500"></select>
+    <div class="grid grid-cols-2 gap-2">
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="entryLabel"></label><input type="date" id="edit-entry" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none"></div>
+      <div><label class="block text-[10px] text-slate-400 mb-1" data-i18n="exitLabel"></label><input type="date" id="edit-exit" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none"></div>
+    </div>
+    <p id="edit-error" class="hidden text-xs text-red-400"></p>
+    <button onclick="saveEditTrip()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl text-sm active:scale-95 transition-transform" data-i18n="save"></button>
+    <button id="edit-delete" onclick="deleteEditTrip()" class="w-full bg-transparent border border-red-500/60 text-red-400 font-bold py-2.5 rounded-xl text-sm active:scale-95 transition-transform"></button>
+  </div>
+</div>
+
+<!-- LİMİT -->
+<div id="limit-modal" class="modal fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 space-y-3 shadow-2xl">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <h3 class="font-bold text-base"><span data-i18n="limitTitle"></span> · <span id="limit-country"></span></h3>
+      <button onclick="closeModal('limit-modal')" class="text-slate-400 p-1" aria-label="close"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <p class="text-xs text-slate-300" data-i18n="limitDesc"></p>
+    <div><label id="limit-win-lbl" class="block text-[11px] text-slate-400 mb-1"></label><input type="number" inputmode="numeric" min="0" max="3650" id="limit-win" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none"></div>
+    <div><label class="block text-[11px] text-slate-400 mb-1" data-i18n="limitStay"></label><input type="number" inputmode="numeric" min="0" max="3650" id="limit-stay" class="w-full bg-slate-950 border border-slate-700 text-slate-100 rounded-xl p-2.5 text-sm focus:outline-none"></div>
+    <button onclick="saveLimit()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl text-sm" data-i18n="save"></button>
+    <button onclick="resetLimit()" class="w-full border border-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-sm" data-i18n="limitReset"></button>
+  </div>
+</div>
+
+<!-- BİLDİRİMLER -->
+<div id="notif-modal" class="modal fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 space-y-3 shadow-2xl max-h-[85vh] overflow-y-auto">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <h3 class="font-bold text-base flex items-center"><i class="fa-solid fa-bell mr-2 text-amber-400"></i><span data-i18n="notifTitle"></span></h3>
+      <button onclick="closeModal('notif-modal')" class="text-slate-400 p-1" aria-label="close"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <div id="notif-list" class="space-y-2"></div>
+    <div id="notif-detail" class="hidden space-y-3"></div>
+  </div>
+</div>
+
+<!-- TANITIM -->
+<div id="intro" class="hidden fixed inset-0 z-[60] bg-slate-950 flex-col max-w-md mx-auto">
+  <div class="flex-1 overflow-y-auto p-6 flex flex-col justify-center">
+    <div class="intro-slide space-y-5 text-center" data-slide="0">
+      <div class="mx-auto bg-blue-600 text-white w-20 h-20 rounded-3xl flex items-center justify-center text-4xl shadow-lg shadow-blue-500/30"><i class="fa-solid fa-passport"></i></div>
+      <h2 class="text-2xl font-extrabold" data-i18n="intro1Title"></h2>
+      <p class="text-sm text-slate-300" data-i18n="intro1Text"></p>
+      <div class="text-left space-y-2 pt-2">
+        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider" data-i18n="introLang"></label>
+        <select id="intro-lang" class="lang-select w-full bg-slate-900 border border-slate-700 text-slate-100 rounded-xl p-3 text-sm"></select>
+      </div>
+    </div>
+    <div class="intro-slide hidden space-y-5 text-center" data-slide="1">
+      <div class="mx-auto bg-emerald-600 text-white w-20 h-20 rounded-3xl flex items-center justify-center text-4xl"><i class="fa-solid fa-calendar-check"></i></div>
+      <h2 class="text-2xl font-extrabold" data-i18n="intro2Title"></h2>
+      <p class="text-sm text-slate-300" data-i18n="intro2Text"></p>
+    </div>
+    <div class="intro-slide hidden space-y-5 text-center" data-slide="2">
+      <div class="mx-auto bg-amber-500 text-white w-20 h-20 rounded-3xl flex items-center justify-center text-4xl"><i class="fa-solid fa-scale-balanced"></i></div>
+      <h2 class="text-2xl font-extrabold" data-i18n="intro3Title"></h2>
+      <p class="text-sm text-slate-300" data-i18n="legalText"></p>
+      <p class="text-sm text-slate-300" data-i18n="privacyText"></p>
+    </div>
+  </div>
+  <div class="p-6 space-y-4">
+    <div class="flex justify-center gap-2"><span class="intro-dot w-2 h-2 rounded-full bg-blue-500"></span><span class="intro-dot w-2 h-2 rounded-full bg-slate-700"></span><span class="intro-dot w-2 h-2 rounded-full bg-slate-700"></span></div>
+    <button id="intro-next" onclick="introNext()" class="w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl text-sm active:scale-95 transition-transform"></button>
+  </div>
+</div>
+
+<div id="toast" class="hidden fixed left-1/2 -translate-x-1/2 bottom-24 z-[70] bg-slate-800 text-white text-sm font-semibold px-4 py-2.5 rounded-xl shadow-2xl border border-slate-700 max-w-[90%] text-center"></div>
+
+<script src="i18n.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

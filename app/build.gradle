@@ -1,0 +1,56 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Sürüm numarası GitHub Actions çalıştırma numarasından gelir; her derleme bir öncekinin üstüne kurulur.
+def vCode = (System.getenv('VERSION_CODE') ?: '1').toInteger()
+def vName = System.getenv('VERSION_NAME') ?: '1.0.0'
+
+android {
+    namespace 'com.benim.borderguide'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'com.benim.borderguide'
+        minSdk 26
+        targetSdk 36
+        versionCode vCode
+        versionName vName
+    }
+
+    signingConfigs {
+        release {
+            def ks = System.getenv('KEYSTORE_FILE')
+            if (ks) {
+                storeFile file(ks)
+                storePassword System.getenv('KEYSTORE_PASSWORD')
+                keyAlias System.getenv('KEY_ALIAS')
+                keyPassword System.getenv('KEY_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            // Anahtar verilmişse imzalı, verilmemişse imzasız derlenir.
+            signingConfig System.getenv('KEYSTORE_FILE') ? signingConfigs.release : null
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    // Web arayüzü doğrudan web/ klasöründen pakete girer.
+    sourceSets {
+        main { assets.srcDirs = ['../web'] }
+    }
+}
+
+dependencies {
+    implementation 'androidx.activity:activity:1.10.1'
+    implementation 'androidx.core:core:1.16.0'
+    implementation 'androidx.webkit:webkit:1.14.0'
+}
