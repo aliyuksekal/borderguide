@@ -70,6 +70,7 @@ jobs:
           ls -la out
 
       - uses: actions/upload-artifact@v4
+        if: env.SIGNED == '1'
         with:
           name: BorderGuide-${{ env.VERSION_NAME }}
           path: out/
