@@ -1,0 +1,34 @@
+BAŞLIK / TITLE (max 30):
+BorderGuide: Vize Gün Sayacı
+
+KISA AÇIKLAMA / SHORT DESCRIPTION (max 80):
+Ülkelerde kaç gün kaldığını takip et, 90/180 kuralını hesapla, güvenle planla.
+
+TAM AÇIKLAMA / FULL DESCRIPTION (max 4000):
+BorderGuide; gezginlerin, dijital göçebelerin ve yurt dışında yaşayanların hangi ülkede kaç gün kaldığını takip etmesini sağlar. Böylece vizesiz kalış süreni farkında olmadan aşmazsın.
+
+Giriş ve çıkış tarihlerini kaydet, hesabı BorderGuide yapsın. "Son 180 günde en fazla 90 gün" gibi kayan süre kuralları (Schengen Bölgesi, Türkiye, Rusya ve diğerleri) gün gün hesaplanır ve kalan hakkını her zaman görürsün.
+
+NELER YAPABİLİRSİN
+• Schengen Bölgesi ve aralarında Birleşik Krallık, Orta Asya, Orta Doğu ve Doğu Asya ülkelerinin de bulunduğu 27 ülkede kalış süreni takip et
+• Kayan süre (90/180) ve tek giriş limitlerini otomatik hesaplat
+• Kendi limitini gir: kurallar pasaporta göre değiştiği için her ülkenin limitini ayarlayabilirsin
+• Seyahat simülatörüyle gelecekteki seyahatini test et; en geç çıkış veya en erken giriş tarihini gör
+• Kayıtlı ya da planlanan bir seyahat limiti aşarsa net bir uyarı al
+• Özbekistan, Kazakistan ve Rusya gibi ülkelerde varışta kayıt kurallarını ve yaklaşık son günü öğren
+• Ülke rehberini oku: süre aşımı cezaları, vize başvuru yerleri, operatörler ve eSIM
+• Yeni giriş ve kayıt kurallarıyla ilgili yasa değişikliği bildirimleri al
+• Uçuş fiyatlarını karşılaştır: seçtiğin tarihler için son bulunan en ucuz biletler ve arama bağlantısı
+• Uygulamayı 6 dilde kullan: Türkçe, English, Русский, O'zbekcha, 한국어, 中文
+• Açık, koyu veya AMOLED tema seç
+
+BORDERGUIDE PRO (tek seferlik satın alma)
+• Vizesiz süren bitmeden 7, 3 ve 1 gün önce ve adres kaydının son gününden önce hatırlatma bildirimi
+• Seyahat geçmişi raporu: tüm giriş-çıkışların tek PDF belgede, vize başvuru formları için kullanışlı
+Takip, simülatör, ülke rehberi ve uçuş fiyatları PRO olmadan da kullanılabilir.
+
+GİZLİLİK
+Seyahat kayıtların yalnızca cihazında saklanır. Hesap yok, reklam yok, takip aracı yok.
+
+ÖNEMLİ
+BorderGuide bağımsız bir uygulamadır ve hiçbir devlet kurumuyla bağlantısı yoktur. Bilgiler genel bir özettir, yol göstermek içindir ve hukuki tavsiye değildir. Vize kuralları vatandaşlığına göre değişir ve sık güncellenir; seyahatten önce mutlaka resmî kurumdan veya konsolosluktan doğrula. Uçuş fiyatları yaklaşıktır; kesin fiyat rezervasyon sitesinde görünür.

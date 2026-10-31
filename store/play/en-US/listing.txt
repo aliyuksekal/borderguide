@@ -1,0 +1,36 @@
+BAŞLIK / TITLE (max 30):
+BorderGuide: Visa Day Counter
+
+KISA AÇIKLAMA / SHORT DESCRIPTION (max 80):
+Track days spent in each country, check the 90/180 rule and plan trips safely.
+
+TAM AÇIKLAMA / FULL DESCRIPTION (max 4000):
+BorderGuide helps travellers, digital nomads and people living abroad keep track of how many days they have spent in each country, so they never overstay by accident.
+
+Log your entry and exit dates and BorderGuide does the counting. Rolling rules such as "90 days in any 180-day period" (Schengen Area, Türkiye, Russia and others) are calculated day by day, and you always see how many days you have left.
+
+WHAT YOU CAN DO
+• Track your stays in the Schengen Area and 27 other countries, including the UK, Türkiye, Central Asia, the Middle East and East Asia
+• See rolling-window (90/180) and per-entry limits calculated automatically
+• Set your own limits: rules depend on your passport, so you can adjust the limit for any country
+• Test a future trip with the trip simulator and see the latest safe exit date or the earliest possible entry date
+• Get clear warnings when a logged or planned trip goes over the limit
+• Check arrival registration rules in countries such as Uzbekistan, Kazakhstan and Russia, with an estimated last day
+• Read the country guide: overstay penalties, where to apply for a visa, mobile operators and eSIM
+• Receive law change notifications about new entry and registration rules
+• Compare flight prices: the cheapest recently found tickets for your dates, with a link to search and book
+• Use the app in 6 languages: English, Türkçe, Русский, O'zbekcha, 한국어, 中文
+• Choose a light, dark or AMOLED theme
+
+BORDERGUIDE PRO (one-time purchase)
+• Reminder notifications 7, 3 and 1 days before your visa-free stay ends, and before address registration deadlines
+• Travel history report: all your entries and exits in one PDF, useful for visa application forms
+Tracking, the simulator, the country guide and flight prices stay available without PRO.
+
+PRIVACY
+Your trips are stored only on your device. No account, no ads, no trackers.
+
+IMPORTANT
+BorderGuide is an independent app and is not affiliated with any government. The information is a general summary for guidance only and is not legal advice. Visa rules depend on your nationality and change often, so always confirm with the official authority or consulate before you travel. Flight prices are approximate; the final price is shown on the booking site.
+
+Ilova o'zbek tilida ham ishlaydi.
