@@ -1,0 +1,10 @@
+<resources>
+    <!-- Android 12+: sistem açılış ekranı simgesiz ve animasyonla aynı renkte; simge büyümez, doğrudan açılış animasyonu gelir. -->
+    <style name="AppTheme" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:colorAccent">@color/brand</item>
+        <item name="android:windowSplashScreenBackground">@color/bg</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_empty</item>
+        <item name="android:windowSplashScreenAnimationDuration">0</item>
+    </style>
+</resources>
