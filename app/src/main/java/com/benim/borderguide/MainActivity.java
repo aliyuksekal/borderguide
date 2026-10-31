@@ -98,7 +98,7 @@ public class MainActivity extends ComponentActivity {
         s.setBuiltInZoomControls(false);
         s.setDisplayZoomControls(false);
 
-        web.setBackgroundColor(Color.parseColor("#020617"));
+        web.setBackgroundColor(Color.parseColor("#0B1736"));
         web.setOverScrollMode(View.OVER_SCROLL_NEVER);
         web.setWebChromeClient(new WebChromeClient());
         web.setWebViewClient(new WebViewClient() {
