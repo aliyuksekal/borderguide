@@ -4,7 +4,8 @@ const FEED_URL = 'https://raw.githubusercontent.com/aliyuksekal/borderguide/main
 const LANGS = [['tr','🇹🇷 Türkçe'],['en','🇬🇧 English'],['uz',"🇺🇿 O'zbekcha"],['ru','🇷🇺 Русский'],['ko','🇰🇷 한국어'],['zh','🇨🇳 中文']];
 const K = { trips:'borderguide_trips', lang:'borderguide_lang', theme:'borderguide_theme', limits:'borderguide_limits',
   read:'borderguide_read_updates', remote:'borderguide_remote_updates', lastCheck:'borderguide_last_check',
-  intro:'borderguide_intro_done', sel:'borderguide_sel_country', wiki:'borderguide_wiki_country', flFrom:'borderguide_fl_from', rem:'borderguide_reminders', devPro:'borderguide_dev_pro' };
+  intro:'borderguide_intro_done', sel:'borderguide_sel_country', wiki:'borderguide_wiki_country', flFrom:'borderguide_fl_from', rem:'borderguide_reminders', devPro:'borderguide_dev_pro', terms:'borderguide_terms_v' };
+const TERMS_V = 1;
 
 const store = {
   get(k, fb){ try { const v = localStorage.getItem(k); return v === null ? fb : JSON.parse(v); } catch(e){ return fb; } },
@@ -121,7 +122,9 @@ function applyLang(){
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
   fillSelects();
   resetDeleteBtn();
-  $('intro-next').textContent = introStep < 2 ? t('next') : t('start');
+  $('intro-next').textContent = introStep < INTRO_LAST ? t('next') : t('start');
+  renderHow();
+  if(legalKind && !$('legal-modal').classList.contains('hidden')) openLegal(legalKind);
   renderAll();
 }
 function changeLanguage(v){ lang = v; store.set(K.lang, v); applyLang(); }
@@ -143,6 +146,7 @@ document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e =
 
 // Android geri tuşu: true dönerse uygulama kapanmaz.
 window.bgBack = function(){
+  if(!$('legal-modal').classList.contains('hidden')){ closeModal('legal-modal'); return true; }
   if(!$('intro').classList.contains('hidden')){ if(introStep > 0){ showIntro(introStep - 1); return true; } return false; }
   const open = openModals();
   if(open.length){
@@ -632,18 +636,73 @@ function makeReport(){
   else { window.__lastReport = html; const w = window.open('', '_blank'); if(w){ w.document.write(html); w.document.close(); w.print(); } }
 }
 
+// ===== Kullanım rehberi =====
+const HOWTO = [['fa-calendar-plus','how1T','how1D'],['fa-chart-pie','how2T','how2D'],['fa-flask','how3T','how3D'],
+  ['fa-book-atlas','how4T','how4D'],['fa-ticket','how5T','how5D'],['fa-gear','how6T','how6D']];
+function howHtml(items){
+  return items.map(([ic, tk, dk], i) => `<div class="flex gap-3 items-start">
+    <div class="shrink-0 w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center"><i class="fa-solid ${ic}"></i></div>
+    <div><p class="text-sm font-bold text-slate-100">${esc(t(tk))}</p><p class="text-xs text-slate-300 leading-relaxed">${esc(t(dk))}</p></div></div>`).join('');
+}
+function renderHow(){
+  $('intro-how-a').innerHTML = howHtml(HOWTO.slice(0, 3));
+  $('intro-how-b').innerHTML = howHtml(HOWTO.slice(3));
+  $('help-list').innerHTML = howHtml(HOWTO) + `<p class="text-xs text-slate-400">${esc(t('howAgain'))}</p>`;
+}
+
+// ===== Yasal belgeler =====
+const LEGAL = { privacy:['lgPrivacy','docPrivacy'], terms:['lgTerms','docTerms'], disclaimer:['lgDisclaimer','docDisclaimer'], third:['lgThird','docThird'], licenses:['lgLicenses','docLicenses'] };
+let legalKind = null;
+function docHtml(text){
+  return String(text).split('\n').filter(l => l.trim()).map(l => {
+    if(l.startsWith('## ')) return `<h4 class="text-sm font-bold text-slate-100 pt-2">${esc(l.slice(3))}</h4>`;
+    if(l.startsWith('• ')) return `<p class="text-sm text-slate-300 leading-relaxed pl-4 -indent-3">• ${esc(l.slice(2))}</p>`;
+    return `<p class="text-sm text-slate-300 leading-relaxed">${esc(l)}</p>`;
+  }).join('');
+}
+function openLegal(kind){
+  const d = LEGAL[kind]; if(!d) return;
+  legalKind = kind;
+  $('legal-title').textContent = t(d[0]);
+  $('legal-body').innerHTML = docHtml(t(d[1]));
+  $('legal-body').parentElement.scrollTop = 0;
+  openModal('legal-modal');
+}
+function rateApp(){
+  const url = 'https://play.google.com/store/apps/details?id=com.benim.borderguide';
+  if(hasBridge() && AndroidBridge.openUrl) AndroidBridge.openUrl(url); else window.open(url, '_blank', 'noopener');
+}
+let wipeArmed = null;
+function wipeAll(){
+  if(!wipeArmed){
+    $('wipe-label').textContent = t('lgDeleteConfirm');
+    wipeArmed = setTimeout(() => { wipeArmed = null; $('wipe-label').textContent = t('lgDelete'); }, 4000);
+    return;
+  }
+  clearTimeout(wipeArmed); wipeArmed = null;
+  try { if(hasBridge() && AndroidBridge.scheduleReminders) AndroidBridge.scheduleReminders('[]'); } catch(e){}
+  try { Object.keys(localStorage).filter(k => k.startsWith('borderguide_')).forEach(k => localStorage.removeItem(k)); } catch(e){}
+  toast(t('lgDeleted'));
+  setTimeout(() => location.reload(), 900);
+}
+
 // ===== Tanıtım ekranı =====
+const INTRO_LAST = 3;
 let introStep = 0;
 function showIntro(step){
   introStep = step;
   document.querySelectorAll('.intro-slide').forEach(s => s.classList.toggle('hidden', +s.dataset.slide !== step));
   document.querySelectorAll('.intro-dot').forEach((d, i) => { d.classList.toggle('bg-blue-500', i === step); d.classList.toggle('bg-slate-700', i !== step); });
-  $('intro-next').textContent = step < 2 ? t('next') : t('start');
+  $('intro-next').textContent = step < INTRO_LAST ? t('next') : t('start');
   const el = $('intro'); el.classList.remove('hidden'); el.classList.add('flex');
+  el.firstElementChild.scrollTop = 0;
+  introBtnState();
 }
+function introBtnState(){ $('intro-next').classList.toggle('opacity-50', introStep === INTRO_LAST && !$('intro-accept').checked); }
 function introNext(){
-  if(introStep < 2) return showIntro(introStep + 1);
-  store.set(K.intro, true);
+  if(introStep < INTRO_LAST) return showIntro(introStep + 1);
+  if(!$('intro-accept').checked){ toast(t('introNeedAccept')); $('intro-accept').focus(); return; }
+  store.set(K.intro, true); store.set(K.terms, TERMS_V);
   $('intro').classList.add('hidden'); $('intro').classList.remove('flex');
 }
 
@@ -670,8 +729,10 @@ function init(){
   $('wiki-country').addEventListener('change', renderWiki);
   $('stay-type').addEventListener('change', renderReg);
   ['trip-entry','trip-exit'].forEach(i => ['change','input'].forEach(ev => $(i).addEventListener(ev, () => { renderReg(); renderWarnBar(); })));
+  $('intro-accept').addEventListener('change', introBtnState);
   applyLang();
   if(!store.get(K.intro, false)) showIntro(0);
+  else if(store.get(K.terms, 0) < TERMS_V) showIntro(INTRO_LAST);
   const last = store.get(K.lastCheck, 0);
   if(Date.now() - last > 864e5) checkLawUpdates(false);
   document.addEventListener('visibilitychange', () => { if(!document.hidden) renderDashboard(); });

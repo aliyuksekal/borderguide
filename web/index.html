@@ -141,7 +141,7 @@
 <nav id="app-nav" class="bg-slate-900 border-t border-slate-800 py-1.5 flex justify-evenly items-center z-40 shrink-0">
   <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center text-blue-400 gap-0.5 px-4 py-1"><i class="fa-solid fa-chart-pie text-lg"></i><span class="text-[10px] font-semibold" data-i18n="navTracker"></span></button>
   <button onclick="switchTab('wiki')" id="nav-wiki" class="flex flex-col items-center text-slate-400 gap-0.5 px-4 py-1"><i class="fa-solid fa-book-atlas text-lg"></i><span class="text-[10px] font-semibold" data-i18n="navWiki"></span></button>
-  <button onclick="switchTab('flights')" id="nav-flights" class="flex flex-col items-center text-slate-400 gap-0.5 px-4 py-1"><i class="fa-solid fa-plane text-lg"></i><span class="text-[10px] font-semibold" data-i18n="navFlights"></span></button>
+  <button onclick="switchTab('flights')" id="nav-flights" class="flex flex-col items-center text-slate-400 gap-0.5 px-4 py-1"><i class="fa-solid fa-ticket text-lg"></i><span class="text-[10px] font-semibold whitespace-nowrap" data-i18n="navFlights"></span></button>
 </nav>
 
 <!-- ===== AYARLAR ===== -->
@@ -181,9 +181,18 @@
       <button id="btn-check" onclick="checkLawUpdates(true)" class="w-full bg-slate-950 border border-slate-700 text-slate-200 font-bold py-2.5 rounded-xl text-sm" data-i18n="btnCheck"></button>
       <p id="check-result" class="text-xs text-slate-300 hidden"></p>
     </div>
-    <div class="border-t border-slate-800 pt-4 space-y-2">
-      <button onclick="openModal('privacy-modal')" class="w-full text-left text-sm text-blue-400 font-semibold flex items-center"><i class="fa-solid fa-shield-halved mr-2"></i><span data-i18n="privacyBtn"></span></button>
-      <p class="text-[11px] text-slate-500"><span data-i18n="version"></span> <span id="app-version">1.0</span> · matali</p>
+    <div class="border-t border-slate-800 pt-4 space-y-1">
+      <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider pb-1" data-i18n="legalHead"></h4>
+      <button onclick="openModal('help-modal')" class="legal-row w-full text-left text-sm text-slate-200 font-semibold flex items-center gap-3 py-2"><i class="fa-solid fa-circle-question w-5 text-center text-blue-400"></i><span data-i18n="helpBtn"></span></button>
+      <button onclick="openLegal('privacy')" class="legal-row w-full text-left text-sm text-slate-200 font-semibold flex items-center gap-3 py-2"><i class="fa-solid fa-shield-halved w-5 text-center text-blue-400"></i><span data-i18n="lgPrivacy"></span></button>
+      <button onclick="openLegal('terms')" class="legal-row w-full text-left text-sm text-slate-200 font-semibold flex items-center gap-3 py-2"><i class="fa-solid fa-file-contract w-5 text-center text-blue-400"></i><span data-i18n="lgTerms"></span></button>
+      <button onclick="openLegal('disclaimer')" class="legal-row w-full text-left text-sm text-slate-200 font-semibold flex items-center gap-3 py-2"><i class="fa-solid fa-scale-balanced w-5 text-center text-blue-400"></i><span data-i18n="lgDisclaimer"></span></button>
+      <button onclick="openLegal('third')" class="legal-row w-full text-left text-sm text-slate-200 font-semibold flex items-center gap-3 py-2"><i class="fa-solid fa-handshake w-5 text-center text-blue-400"></i><span data-i18n="lgThird"></span></button>
+      <button onclick="openLegal('licenses')" class="legal-row w-full text-left text-sm text-slate-200 font-semibold flex items-center gap-3 py-2"><i class="fa-solid fa-code w-5 text-center text-blue-400"></i><span data-i18n="lgLicenses"></span></button>
+      <a href="mailto:matali.truz@gmail.com?subject=BorderGuide" class="legal-row w-full text-left text-sm text-slate-200 font-semibold flex items-center gap-3 py-2"><i class="fa-solid fa-envelope w-5 text-center text-blue-400"></i><span data-i18n="lgFeedback"></span></a>
+      <button onclick="rateApp()" class="legal-row w-full text-left text-sm text-slate-200 font-semibold flex items-center gap-3 py-2"><i class="fa-solid fa-star w-5 text-center text-amber-400"></i><span data-i18n="lgRate"></span></button>
+      <button id="wipe-btn" onclick="wipeAll()" class="w-full text-left text-sm text-red-400 font-semibold flex items-center gap-3 py-2"><i class="fa-solid fa-trash w-5 text-center"></i><span id="wipe-label" data-i18n="lgDelete"></span></button>
+      <p class="text-[11px] text-slate-500 pt-1"><span data-i18n="version"></span> <span id="app-version">1.0</span> · matali · matali.truz@gmail.com</p>
     </div>
     <button onclick="closeModal('settings-modal')" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl text-sm" data-i18n="done"></button>
   </div>
@@ -227,17 +236,27 @@
   </div>
 </div>
 
-<!-- ===== GİZLİLİK ===== -->
-<div id="privacy-modal" class="modal fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
+<!-- ===== YASAL BELGE (gizlilik, koşullar, sorumluluk reddi...) ===== -->
+<div id="legal-modal" class="modal fixed inset-0 bg-black/80 z-[65] hidden items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 space-y-3 shadow-2xl max-h-[85vh] overflow-y-auto">
-    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-      <h3 class="font-bold text-base" data-i18n="privacyTitle"></h3>
-      <button onclick="closeModal('privacy-modal')" class="text-slate-400 p-1" aria-label="close"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3 gap-2">
+      <h3 id="legal-title" class="font-bold text-base"></h3>
+      <button onclick="closeModal('legal-modal')" class="text-slate-400 p-1" aria-label="close"><i class="fa-solid fa-xmark text-lg"></i></button>
     </div>
-    <p class="text-sm text-slate-300 leading-relaxed" data-i18n="privacyText"></p>
-    <p class="text-sm text-slate-300 leading-relaxed" data-i18n="legalText"></p>
-    <p class="text-xs text-amber-400" data-i18n="dataNote"></p>
-    <p class="text-xs text-slate-400"><span data-i18n="contact"></span>: matali.truz@gmail.com</p>
+    <div id="legal-body" class="space-y-2"></div>
+    <p class="text-[11px] text-slate-500 border-t border-slate-800 pt-3"><span data-i18n="lgUpdated"></span> · matali · matali.truz@gmail.com</p>
+  </div>
+</div>
+
+<!-- ===== KULLANIM REHBERİ ===== -->
+<div id="help-modal" class="modal fixed inset-0 bg-black/80 z-50 hidden items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-5 space-y-4 shadow-2xl max-h-[85vh] overflow-y-auto">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <h3 class="font-bold text-base flex items-center"><i class="fa-solid fa-circle-question mr-2 text-blue-400"></i><span data-i18n="howTitle"></span></h3>
+      <button onclick="closeModal('help-modal')" class="text-slate-400 p-1" aria-label="close"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+    <div id="help-list" class="space-y-4"></div>
+    <button onclick="closeModal('help-modal')" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl text-sm" data-i18n="done"></button>
   </div>
 </div>
 
@@ -301,20 +320,33 @@
         <select id="intro-lang" class="lang-select w-full bg-slate-900 border border-slate-700 text-slate-100 rounded-xl p-3 text-sm"></select>
       </div>
     </div>
-    <div class="intro-slide hidden space-y-5 text-center" data-slide="1">
-      <div class="mx-auto bg-emerald-600 text-white w-20 h-20 rounded-3xl flex items-center justify-center text-4xl"><i class="fa-solid fa-calendar-check"></i></div>
-      <h2 class="text-2xl font-extrabold" data-i18n="intro2Title"></h2>
-      <p class="text-sm text-slate-300" data-i18n="intro2Text"></p>
+    <div class="intro-slide hidden space-y-5" data-slide="1">
+      <h2 class="text-2xl font-extrabold text-center" data-i18n="howTitle"></h2>
+      <div id="intro-how-a" class="space-y-4 text-left"></div>
     </div>
-    <div class="intro-slide hidden space-y-5 text-center" data-slide="2">
+    <div class="intro-slide hidden space-y-5" data-slide="2">
+      <h2 class="text-2xl font-extrabold text-center" data-i18n="howTitle"></h2>
+      <div id="intro-how-b" class="space-y-4 text-left"></div>
+      <p class="text-xs text-slate-400 text-center" data-i18n="howAgain"></p>
+    </div>
+    <div class="intro-slide hidden space-y-4 text-center" data-slide="3">
       <div class="mx-auto bg-amber-500 text-white w-20 h-20 rounded-3xl flex items-center justify-center text-4xl"><i class="fa-solid fa-scale-balanced"></i></div>
       <h2 class="text-2xl font-extrabold" data-i18n="intro3Title"></h2>
       <p class="text-sm text-slate-300" data-i18n="legalText"></p>
       <p class="text-sm text-slate-300" data-i18n="privacyText"></p>
+      <div class="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm">
+        <button onclick="openLegal('terms')" class="text-blue-400 font-semibold underline" data-i18n="lgTerms"></button>
+        <button onclick="openLegal('privacy')" class="text-blue-400 font-semibold underline" data-i18n="lgPrivacy"></button>
+        <button onclick="openLegal('disclaimer')" class="text-blue-400 font-semibold underline" data-i18n="lgDisclaimer"></button>
+      </div>
+      <label class="flex gap-3 items-start text-left bg-slate-900 border border-slate-700 rounded-xl p-3 cursor-pointer">
+        <input type="checkbox" id="intro-accept" class="mt-0.5 w-5 h-5 shrink-0 accent-blue-600">
+        <span class="text-sm text-slate-200" data-i18n="introAccept"></span>
+      </label>
     </div>
   </div>
   <div class="p-6 space-y-4">
-    <div class="flex justify-center gap-2"><span class="intro-dot w-2 h-2 rounded-full bg-blue-500"></span><span class="intro-dot w-2 h-2 rounded-full bg-slate-700"></span><span class="intro-dot w-2 h-2 rounded-full bg-slate-700"></span></div>
+    <div class="flex justify-center gap-2"><span class="intro-dot w-2 h-2 rounded-full bg-blue-500"></span><span class="intro-dot w-2 h-2 rounded-full bg-slate-700"></span><span class="intro-dot w-2 h-2 rounded-full bg-slate-700"></span><span class="intro-dot w-2 h-2 rounded-full bg-slate-700"></span></div>
     <button id="intro-next" onclick="introNext()" class="w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl text-sm active:scale-95 transition-transform"></button>
   </div>
 </div>
